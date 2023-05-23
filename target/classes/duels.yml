@@ -1,0 +1,12 @@
+duels:
+  expire-time: 10 # in seconds
+messages:
+  no-permission: "&cYou don't have permission to use this"
+  no-invite: "&cNo invites could be found"
+  invite-accepted: "&cAccepted the invite"
+  not-in-party: "&cYou must be in a party to use this"
+  not-party-leader: "&cYou must be the party leader to use this"
+  party-not-found: "&cNo parties could be found with the specified name"
+  party-leader-not-found: "&cParty leader could not be found for the specified party"
+  invite-sent: "&cInvite sent"
+  invited: "&cYou have been invited by %player_name% to a duel. Type /duel accept to accept the duel"

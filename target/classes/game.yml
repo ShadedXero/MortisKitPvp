@@ -1,0 +1,15 @@
+game:
+  start-time: 5 # in seconds
+  end-time: 3 # in seconds
+messages:
+  no-permission: "&cYou don't have permission to use this"
+  not-in-game: "&cYou must be in a game to use this command"
+  countdown: "&aStarting in %time%"
+  countdown-title: "&aStarting in"
+  countdown-subtitle: "&a%time%"
+  win: "&aYou won"
+  win-title: "&aVictory"
+  win-subtitle: ""
+  lose: "&aDefeat"
+  lose-title: "&aYou lost"
+  lose-subtitle: ""

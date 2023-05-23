@@ -1,0 +1,21 @@
+arenas:
+  EXAMPLE_ARENA:
+    name: "&aExample Arena"
+    author: "None_123"
+    world: world_nether
+    red-spawn: 100,70,100,0,0
+    blue-spawn: 125,70,125,0,0
+    lava-instant-kill: true
+    water-instant-kill: true
+    durability: false
+    hunger: false
+  EXAMPLE_ARENA_2:
+    name: "&bExample Arena 2"
+    author: "None_123"
+    world: world_the_end
+    red-spawn: 100,70,100,0,0
+    blue-spawn: 125,70,125,0,0
+    lava-instant-kill: false
+    water-instant-kill: false
+    durability: true
+    hunger: true
