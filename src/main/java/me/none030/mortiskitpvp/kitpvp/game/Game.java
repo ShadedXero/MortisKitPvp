@@ -69,6 +69,9 @@ public class Game {
             Kit kit = kitManager.getKit(player);
             if (kit == null) {
                 kit = kitManager.getRandomKit(player);
+                if (kit == null) {
+                    return;
+                }
             }
             kit.give(player);
         }
@@ -149,26 +152,66 @@ public class Game {
     }
 
     public void showResult(GameManager gameManager) {
-        for (GamePlayer gamePlayer : gamePlayers) {
-            if (gamePlayer.isTeam(winner)) {
+        if (winner.equals(TeamType.NONE)) {
+            for (GamePlayer gamePlayer : getRedGamePlayers()) {
+                Component title = Component.text(gameManager.getMessage("TIE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                Component subTitle = Component.text(gameManager.getMessage("TIE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+            }
+            for (GamePlayer gamePlayer : getBlueGamePlayers()) {
+                Component title = Component.text(gameManager.getMessage("TIE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                Component subTitle = Component.text(gameManager.getMessage("TIE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+            }
+        }
+        if (winner.equals(TeamType.RED)) {
+            for (GamePlayer gamePlayer : getRedGamePlayers()) {
                 Component title = Component.text(gameManager.getMessage("WIN_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
                 Component subTitle = Component.text(gameManager.getMessage("WIN_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
                 gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
-                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("WIN").replace("%team_name%", gamePlayer.getTeamName()));
-            }else {
+            }
+            for (GamePlayer gamePlayer : getBlueGamePlayers()) {
                 Component title = Component.text(gameManager.getMessage("LOSE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
                 Component subTitle = Component.text(gameManager.getMessage("LOSE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
                 gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
-                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("LOSE").replace("%team_name%", gamePlayer.getTeamName()));
+            }
+        }
+        if (winner.equals(TeamType.BLUE)) {
+            for (GamePlayer gamePlayer : getBlueGamePlayers()) {
+                Component title = Component.text(gameManager.getMessage("WIN_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                Component subTitle = Component.text(gameManager.getMessage("WIN_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+            }
+            for (GamePlayer gamePlayer : getRedGamePlayers()) {
+                Component title = Component.text(gameManager.getMessage("LOSE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                Component subTitle = Component.text(gameManager.getMessage("LOSE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
             }
         }
     }
 
     public void sendResultMessage(GameManager gameManager) {
-        for (GamePlayer gamePlayer : gamePlayers) {
-            if (gamePlayer.isTeam(winner)) {
+        if (winner.equals(TeamType.NONE)) {
+            for (GamePlayer gamePlayer : getRedGamePlayers()) {
+                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("TIE").replace("%team_name%", gamePlayer.getTeamName()));
+            }
+            for (GamePlayer gamePlayer : getBlueGamePlayers()) {
+                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("TIE").replace("%team_name%", gamePlayer.getTeamName()));
+            }
+        }
+        if (winner.equals(TeamType.RED)) {
+            for (GamePlayer gamePlayer : getRedGamePlayers()) {
                 gamePlayer.getPlayer().sendMessage(gameManager.getMessage("WIN").replace("%team_name%", gamePlayer.getTeamName()));
-            }else {
+            }
+            for (GamePlayer gamePlayer : getBlueGamePlayers()) {
+                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("LOSE").replace("%team_name%", gamePlayer.getTeamName()));
+            }
+        }
+        if (winner.equals(TeamType.BLUE)) {
+            for (GamePlayer gamePlayer : getBlueGamePlayers()) {
+                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("WIN").replace("%team_name%", gamePlayer.getTeamName()));
+            }
+            for (GamePlayer gamePlayer : getRedGamePlayers()) {
                 gamePlayer.getPlayer().sendMessage(gameManager.getMessage("LOSE").replace("%team_name%", gamePlayer.getTeamName()));
             }
         }
@@ -192,6 +235,7 @@ public class Game {
         List<GamePlayer> blueGamePlayers = getAliveBlueGamePlayers();
         if (redGamePlayers.size() == 0 && blueGamePlayers.size() == 0) {
             setEnded(true);
+            setWinner(TeamType.NONE);
             return;
         }
         if (redGamePlayers.size() == 0) {
@@ -206,6 +250,27 @@ public class Game {
             setWinner(TeamType.RED);
             sendResultMessage(gameManager);
             showResult(gameManager);
+            return;
+        }
+        if (time >= gameManager.getLength()) {
+            if (redGamePlayers.size() == blueGamePlayers.size()) {
+                setEnded(true);
+                setWinner(TeamType.NONE);
+                sendResultMessage(gameManager);
+                showResult(gameManager);
+                return;
+            }
+            if (redGamePlayers.size() < blueGamePlayers.size()) {
+                setEnded(true);
+                setWinner(TeamType.BLUE);
+                sendResultMessage(gameManager);
+                showResult(gameManager);
+            }else {
+                setEnded(true);
+                setWinner(TeamType.RED);
+                sendResultMessage(gameManager);
+                showResult(gameManager);
+            }
         }
     }
 

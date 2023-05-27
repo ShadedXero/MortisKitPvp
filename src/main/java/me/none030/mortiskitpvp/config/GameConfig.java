@@ -25,8 +25,9 @@ public class GameConfig extends Config {
         if (game == null) {
             return;
         }
+        long length = game.getLong("length");
         long startTime = game.getLong("start-time");
         long endTime = game.getLong("end-time");
-        getConfigManager().getManager().setGameManager(new GameManager(getConfigManager().getManager().getBattlefieldManager(), startTime, endTime));
+        getConfigManager().getManager().setGameManager(new GameManager(getConfigManager().getManager().getBattlefieldManager(), length, startTime, endTime));
     }
 }

@@ -54,6 +54,9 @@ public class KitManager extends Manager {
 
     public Kit getRandomKit(Player player) {
         List<Kit> kits = getAccessibleKits(player);
+        if (kits.size() == 0) {
+            return null;
+        }
         Random random = new Random();
         int index = random.nextInt(0, kits.size());
         return kits.get(index);

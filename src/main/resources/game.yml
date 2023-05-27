@@ -1,4 +1,5 @@
 game:
+  length: 1800 # in seconds
   start-time: 5 # in seconds
   end-time: 3 # in seconds
 messages:
@@ -10,6 +11,9 @@ messages:
   win: "&aYou won"
   win-title: "&aVictory"
   win-subtitle: ""
-  lose: "&aDefeat"
-  lose-title: "&aYou lost"
+  lose: "&aYou lost"
+  lose-title: "&aDefeat"
   lose-subtitle: ""
+  tie: "&aTie"
+  tie-title: "&aTied"
+  tie-subtitle: ""

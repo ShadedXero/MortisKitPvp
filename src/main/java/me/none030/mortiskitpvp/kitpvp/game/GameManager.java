@@ -1,6 +1,7 @@
 package me.none030.mortiskitpvp.kitpvp.game;
 
 import me.none030.mortiskitpvp.MortisKitPvp;
+import me.none030.mortiskitpvp.config.DataConfig;
 import me.none030.mortiskitpvp.kitpvp.Manager;
 import me.none030.mortiskitpvp.kitpvp.arenas.Arena;
 import me.none030.mortiskitpvp.kitpvp.battlefield.BattlefieldManager;
@@ -16,14 +17,17 @@ import java.util.List;
 public class GameManager extends Manager {
 
     private final MortisKitPvp plugin = MortisKitPvp.getInstance();
+    private final DataConfig config = new DataConfig();
     private final BattlefieldManager battlefieldManager;
+    private final long length;
     private final long startTime;
     private final long endTime;
     private final List<Game> games;
     private final HashMap<Player, Game> gameByPlayer;
 
-    public GameManager(BattlefieldManager battlefieldManager, long startTime, long endTime) {
+    public GameManager(BattlefieldManager battlefieldManager, long length, long startTime, long endTime) {
         this.battlefieldManager = battlefieldManager;
+        this.length = length;
         this.startTime = startTime;
         this.endTime = endTime;
         this.games = new ArrayList<>();
@@ -41,6 +45,7 @@ public class GameManager extends Manager {
                 Iterator<Game> gameList = games.iterator();
                 while (gameList.hasNext()) {
                     Game game = gameList.next();
+                    game.check(gameManager);
                     game.setTime(game.getTime() + 1);
                     if (!game.isStarted()) {
                         if (game.getTime() >= startTime) {
@@ -81,6 +86,7 @@ public class GameManager extends Manager {
         for (Player player : players) {
             gameByPlayer.put(player, game);
         }
+        config.add(game.getWorld());
     }
 
     public void start(Invite invite) {
@@ -101,6 +107,11 @@ public class GameManager extends Manager {
         for (Player bluePlayer : invite.getBluePlayers()) {
             gameByPlayer.put(bluePlayer, game);
         }
+        config.add(game.getWorld());
+    }
+
+    public DataConfig getConfig() {
+        return config;
     }
 
     public BattlefieldManager getBattlefieldManager() {
@@ -109,6 +120,10 @@ public class GameManager extends Manager {
 
     public long getStartTime() {
         return startTime;
+    }
+
+    public long getLength() {
+        return length;
     }
 
     public long getEndTime() {

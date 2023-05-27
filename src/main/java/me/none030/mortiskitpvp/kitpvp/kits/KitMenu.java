@@ -64,7 +64,11 @@ public class KitMenu implements InventoryHolder {
 
     public void click(int slot) {
         if (slot == kitManager.getSettings().getRandomKitSlot()) {
-            kitManager.setKit(player, kitManager.getRandomKit(player).getId());
+            Kit kit = kitManager.getRandomKit(player);
+            if (kit == null) {
+                return;
+            }
+            kitManager.setKit(player, kit.getId());
             player.sendMessage(kitManager.getMessage("KIT_CHANGED"));
             close(player);
             return;

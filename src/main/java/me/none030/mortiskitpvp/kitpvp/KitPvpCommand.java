@@ -1,5 +1,6 @@
 package me.none030.mortiskitpvp.kitpvp;
 
+import me.none030.mortiskitpvp.kitpvp.game.Game;
 import me.none030.mortiskitpvp.kitpvp.kits.Kit;
 import me.none030.mortiskitpvp.kitpvp.kits.KitMenu;
 import me.none030.mortiskitpvp.kitpvp.matchmakings.MatchMakingMenu;
@@ -96,6 +97,17 @@ public class KitPvpCommand implements TabExecutor {
             MatchMakingMenu menu = kitPvpManager.getMatchMakingManager().getMenu();
             menu.open(player);
         }
+        if (args[0].equalsIgnoreCase("purge")) {
+            if (!sender.hasPermission("mortiskitpvp.purge")) {
+                sender.sendMessage(new MessageUtils("&cYou don't have permission to use this").color());
+                return false;
+            }
+            for (Game game : kitPvpManager.getGameManager().getGames()) {
+                game.end(kitPvpManager.getGameManager());
+                kitPvpManager.getGameManager().getGames().remove(game);
+            }
+            sender.sendMessage(new MessageUtils("&cGames purged").color());
+        }
         if (args[0].equalsIgnoreCase("reload")) {
             if (!sender.hasPermission("mortiskitpvp.reload")) {
                 sender.sendMessage(new MessageUtils("&cThis command can only be executed by a player").color());
@@ -113,6 +125,7 @@ public class KitPvpCommand implements TabExecutor {
             List<String> arguments = new ArrayList<>();
             arguments.add("kit");
             arguments.add("matchmaking");
+            arguments.add("purge");
             arguments.add("reload");
             return arguments;
         }

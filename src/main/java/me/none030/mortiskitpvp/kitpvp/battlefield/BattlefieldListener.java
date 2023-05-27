@@ -15,6 +15,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 public class BattlefieldListener implements Listener {
 
@@ -34,7 +35,15 @@ public class BattlefieldListener implements Listener {
     }
 
     @EventHandler
-    public void onSpawn(PlayerRespawnEvent e) {
+    public void onSpawn(PlayerSpawnLocationEvent e) {
+        Player player = e.getPlayer();
+        Battlefield battlefield = battlefieldManager.getBattlefield();
+        battlefield.teleport(player);
+        battlefield.addElytra(player);
+    }
+
+    @EventHandler
+    public void onReSpawn(PlayerRespawnEvent e) {
         Player player = e.getPlayer();
         Battlefield battlefield = battlefieldManager.getBattlefield();
         battlefield.teleport(player);
