@@ -1,0 +1,17 @@
+game:
+  start-time: 5 # in seconds
+  end-time: 3 # in seconds
+  messages:
+    countdown: "&aStarting in %time%"
+    countdown-title: "&aStarting in"
+    countdown-subtitle: "&a%time%"
+    win: "&aYou won"
+    win-title: "&aVictory"
+    win-subtitle: ""
+    lose: "&aDefeat"
+    lose-title: "&aYou lost"
+    lose-subtitle: ""
+duels:
+  expire-time: 10 # in seconds
+combat:
+  reset-time: 7 # in seconds

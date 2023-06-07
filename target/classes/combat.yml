@@ -1,0 +1,6 @@
+combat:
+  reset-time: 7 # in seconds
+messages:
+  no-permission: "&cYou don't have permission to use this"
+  in-combat: "&cYou cannot use this while in combat"
+  teleported: "&cTeleported to spawn"

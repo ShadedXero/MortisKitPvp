@@ -1,0 +1,10 @@
+battlefield:
+  name: "&aBattlefield"
+  author: "&aNone_123"
+  world: world
+  spawn: 50,70,50,0,0
+  protected-origin: 0,0,0
+  protected-end: 100,100,100
+  elytra: BATTLEFIELD_ELYTRA
+  durability: false
+  hunger: false

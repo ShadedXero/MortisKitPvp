@@ -1,0 +1,59 @@
+menu:
+  size: 27
+  menu-title: "&aMatchMaking"
+  modes: # mode: slot
+    1: 9
+    2: 11
+    3: 13
+    4: 15
+    8: 17
+messages:
+  added-queue: "&aAdded to the matchmaking queue"
+  red-team: "&cRed Team"
+  blue-team: "&bBlue Team"
+matchmaking:
+  ONE_VS_ONE:
+    mode: 1
+    min: 2
+    max: 2
+    wait-time: 0 # in seconds
+    icon: ONE_VS_ONE
+    arenas:
+      - EXAMPLE_ARENA
+      - EXAMPLE_ARENA_2
+  TWO_VS_TWO:
+    mode: 2
+    min: 2
+    max: 4
+    wait-time: 15
+    icon: TWO_VS_TWO
+    arenas:
+      - EXAMPLE_ARENA
+      - EXAMPLE_ARENA_2
+  THREE_VS_THREE:
+    mode: 3
+    min: 4
+    max: 6
+    wait-time: 30
+    icon: THREE_VS_THREE
+    arenas:
+      - EXAMPLE_ARENA
+      - EXAMPLE_ARENA_2
+  FOUR_VS_FOUR:
+    mode: 4
+    min: 6
+    max: 8
+    wait-time: 60
+    icon: FOUR_VS_FOUR
+    arenas:
+      - EXAMPLE_ARENA
+      - EXAMPLE_ARENA_2
+  EIGHT_VS_EIGHT:
+    mode: 8
+    min: 8
+    max: 16
+    wait-time: 60
+    icon: EIGHT_VS_EIGHT
+    arenas:
+      - EXAMPLE_ARENA
+      - EXAMPLE_ARENA_2

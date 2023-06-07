@@ -1,0 +1,26 @@
+name: MortisKitPvp
+version: '${project.version}'
+main: me.none030.mortiskitpvp.MortisKitPvp
+api-version: 1.13
+softdepend:
+  - PlaceholderAPI
+  - Parties
+  - MortisHeads
+depend:
+  - Multiverse-Core
+commands:
+  kitpvp:
+    aliases:
+      - mortiskitpvp
+  spawn:
+    aliases:
+      - mortisspawn
+  leave:
+    aliases:
+      - mortisleave
+  duel:
+    aliases:
+      - mortisduel
+  spectate:
+    aliases:
+      - mortisspectate

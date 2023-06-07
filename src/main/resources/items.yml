@@ -1,0 +1,40 @@
+items:
+  BATTLEFIELD_ELYTRA:
+    material: ELYTRA
+    amount: 1
+  ONE_VS_ONE:
+    material: COMPASS
+    amount: 1
+    name: "&a1v1 MatchMaking"
+  TWO_VS_TWO:
+    material: COMPASS
+    amount: 1
+    name: "&a2v2 MatchMaking"
+  THREE_VS_THREE:
+    material: COMPASS
+    amount: 1
+    name: "&a3v3 MatchMaking"
+  FOUR_VS_FOUR:
+    material: COMPASS
+    amount: 1
+    name: "&a4v4 MatchMaking"
+  EIGHT_VS_EIGHT:
+    material: COMPASS
+    amount: 1
+    name: "&a8v8 MatchMaking"
+  RANDOM_KIT:
+    material: REDSTONE
+    amount: 1
+    name: "&aRandom Kit"
+  SWORD_PVP:
+    material: DIAMOND_SWORD
+    amount: 1
+    name: "&aSword PvP"
+    lore:
+      - "%permission%"
+  AXE_PVP:
+    material: IRON_AXE
+    amount: 1
+    name: "&aAxe PvP"
+    lore:
+      - "%permission%"
