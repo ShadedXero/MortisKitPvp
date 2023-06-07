@@ -1,6 +1,8 @@
 package me.none030.mortiskitpvp.kitpvp.game;
 
+import me.none030.mortiskitpvp.kitpvp.arenas.Arena;
 import org.bukkit.GameMode;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class GamePlayer {
@@ -44,5 +46,10 @@ public class GamePlayer {
         }else {
             player.setGameMode(GameMode.SURVIVAL);
         }
+    }
+
+    public void setSpectating(Arena arena, World world, boolean spectating) {
+        arena.teleportSpectator(player, world);
+        setSpectating(spectating);
     }
 }

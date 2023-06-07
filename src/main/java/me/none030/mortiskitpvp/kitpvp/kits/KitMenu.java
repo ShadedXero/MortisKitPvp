@@ -10,21 +10,20 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class KitMenu implements InventoryHolder {
 
     private final KitManager kitManager;
     private final Player player;
     private final Inventory menu;
-    private final List<String> kitIds;
+    private final HashMap<Integer, String> kitIdBySlot;
 
     public KitMenu(KitManager kitManager, Player player) {
         this.kitManager = kitManager;
         this.player = player;
         this.menu = getMenu();
-        this.kitIds = new ArrayList<>();
+        this.kitIdBySlot = new HashMap<>();
         create();
         setKits();
     }
@@ -51,14 +50,24 @@ public class KitMenu implements InventoryHolder {
     }
 
     private void setKits() {
-        List<Kit> kits = kitManager.getAccessibleKits(player);
-        for (int i = 0; i < menu.getSize(); i++) {
-            if (i >= kits.size()) {
-                break;
+        HashMap<String, Integer> slotByKitId = kitManager.getSettings().getSlotByKitId();
+        for (String kitId : slotByKitId.keySet()) {
+            Kit kit = kitManager.getKitById().get(kitId);
+            if (kit == null) {
+                continue;
             }
-            Kit kit = kits.get(i);
-            kitIds.add(kit.getId());
-            menu.setItem(i, kit.getIcon());
+            Integer slot = slotByKitId.get(kitId);
+            if (slot == null) {
+                continue;
+            }
+            ItemEditor editor = new ItemEditor(kit.getIcon());
+            if (kit.hasPermission(player)) {
+                editor.setPlaceholder("%permission%", kitManager.getMessage("PERMITTED"));
+            }else {
+                editor.setPlaceholder("%permission%", kitManager.getMessage("NOT_PERMITTED").replace("%permission%", kit.getPermission()));
+            }
+            menu.setItem(slot, editor.getItem());
+            kitIdBySlot.put(slot, kitId);
         }
     }
 
@@ -73,10 +82,18 @@ public class KitMenu implements InventoryHolder {
             close(player);
             return;
         }
-        if (slot >= kitIds.size()) {
+        String kitId = kitIdBySlot.get(slot);
+        if (kitId == null) {
             return;
         }
-        String kitId = kitIds.get(slot);
+        Kit kit = kitManager.getKitById().get(kitId);
+        if (kit == null) {
+            return;
+        }
+        if (!kit.hasPermission(player)) {
+            player.sendMessage(kitManager.getMessage("NOT_PERMITTED").replace("%permission%", kit.getPermission()));
+            return;
+        }
         kitManager.setKit(player, kitId);
         player.sendMessage(kitManager.getMessage("KIT_CHANGED"));
         close(player);

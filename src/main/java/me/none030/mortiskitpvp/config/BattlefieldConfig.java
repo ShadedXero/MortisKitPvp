@@ -2,6 +2,7 @@ package me.none030.mortiskitpvp.config;
 
 import me.none030.mortiskitpvp.kitpvp.battlefield.Battlefield;
 import me.none030.mortiskitpvp.kitpvp.battlefield.BattlefieldManager;
+import me.none030.mortiskitpvp.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -29,6 +30,8 @@ public class BattlefieldConfig extends Config {
         if (section == null) {
             return;
         }
+        String name = new MessageUtils(section.getString("name")).color();
+        String author = new MessageUtils(section.getString("author")).color();
         String worldName = section.getString("world");
         if (worldName == null) {
            return;
@@ -74,7 +77,7 @@ public class BattlefieldConfig extends Config {
         }
         boolean durability = section.getBoolean("durability");
         boolean hunger = section.getBoolean("hunger");
-        Battlefield battlefield = new Battlefield(world, spawn, origin, end, elytra, durability, hunger);
+        Battlefield battlefield = new Battlefield(name, author, world, spawn, origin, end, elytra, durability, hunger);
         getConfigManager().getManager().setBattlefieldManager(new BattlefieldManager(getConfigManager().getManager().getKitManager(), battlefield));
     }
 }

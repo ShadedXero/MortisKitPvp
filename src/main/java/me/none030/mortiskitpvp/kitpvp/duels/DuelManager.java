@@ -6,13 +6,16 @@ import me.none030.mortiskitpvp.kitpvp.arenas.ArenaManager;
 import me.none030.mortiskitpvp.kitpvp.duels.invite.Invite;
 import me.none030.mortiskitpvp.kitpvp.game.GameManager;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class DuelManager extends Manager {
 
+    private final MortisKitPvp plugin = MortisKitPvp.getInstance();
     private final ArenaManager arenaManager;
     private final GameManager gameManager;
     private final long expireTime;
@@ -34,18 +37,26 @@ public class DuelManager extends Manager {
     }
 
     private void check() {
-        for (Invite invite : invites) {
-            invite.setTimer(invite.getTimer() + 1);
-            if (invite.getTimer() > expireTime) {
-                invites.remove(invite);
-                continue;
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Iterator<Invite> inviteList = invites.iterator();
+                while (inviteList.hasNext()) {
+                    Invite invite = inviteList.next();
+                    invite.setTimer(invite.getTimer() + 1);
+                    if (invite.getTimer() > expireTime) {
+                        inviteList.remove();
+                        continue;
+                    }
+                    if (invite.isAccepted()) {
+                        inviteList.remove();
+                        removePlayer(invite.getInviter());
+                        removePlayer(invite.getInvited());
+                        gameManager.start(invite);
+                    }
+                }
             }
-            if (invite.isAccepted()) {
-                gameManager.start(invite);
-                removePlayer(invite.getInviter());
-                removePlayer(invite.getInvited());
-            }
-        }
+        }.runTaskTimer(plugin, 0L, 20L);
     }
 
     public void removePlayer(Player player) {
@@ -53,13 +64,11 @@ public class DuelManager extends Manager {
             Invite invite = inviteByInvited.get(player);
             inviteByInvited.remove(player);
             inviteByInviter.remove(invite.getInviter());
-            invites.remove(invite);
         }
         if (inviteByInviter.containsKey(player)) {
             Invite invite = inviteByInviter.get(player);
             inviteByInviter.remove(player);
             inviteByInvited.remove(invite.getInvited());
-            invites.remove(invite);
         }
     }
 

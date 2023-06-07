@@ -10,6 +10,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArenaConfig extends Config {
 
@@ -43,29 +45,38 @@ public class ArenaConfig extends Config {
             if (world == null) {
                 continue;
             }
-            String rawRed = section.getString("red-spawn");
-            if (rawRed == null) {
+            List<Location> redSpawns = new ArrayList<>();
+            for (String rawRed : section.getStringList("red-spawns")) {
+                String[] rawRedSpawn = rawRed.split(",");
+                if (rawRedSpawn.length != 5) {
+                    continue;
+                }
+                Location redSpawn = new Location(world, Double.parseDouble(rawRedSpawn[0]), Double.parseDouble(rawRedSpawn[1]), Double.parseDouble(rawRedSpawn[2]), Float.parseFloat(rawRedSpawn[3]), Float.parseFloat(rawRedSpawn[4]));
+                redSpawns.add(redSpawn);
+            }
+            List<Location> blueSpawns = new ArrayList<>();
+            for (String rawBlue : section.getStringList("blue-spawns")) {
+                String[] rawBlueSpawn = rawBlue.split(",");
+                if (rawBlueSpawn.length != 5) {
+                    continue;
+                }
+                Location blueSpawn = new Location(world, Double.parseDouble(rawBlueSpawn[0]), Double.parseDouble(rawBlueSpawn[1]), Double.parseDouble(rawBlueSpawn[2]), Float.parseFloat(rawBlueSpawn[3]), Float.parseFloat(rawBlueSpawn[4]));
+                blueSpawns.add(blueSpawn);
+            }
+            String rawSpectate = section.getString("spectate");
+            if (rawSpectate == null) {
                 continue;
             }
-            String[] rawRedSpawn = rawRed.split(",");
-            if (rawRedSpawn.length != 5) {
+            String[] rawSpectateSpawn = rawSpectate.split(",");
+            if (rawSpectateSpawn.length != 5) {
                 continue;
             }
-            Location redSpawn = new Location(world, Double.parseDouble(rawRedSpawn[0]), Double.parseDouble(rawRedSpawn[1]), Double.parseDouble(rawRedSpawn[2]), Float.parseFloat(rawRedSpawn[3]), Float.parseFloat(rawRedSpawn[4]));
-            String rawBlue = section.getString("blue-spawn");
-            if (rawBlue == null) {
-                continue;
-            }
-            String[] rawBlueSpawn = rawBlue.split(",");
-            if (rawBlueSpawn.length != 5) {
-                continue;
-            }
-            Location blueSpawn = new Location(world, Double.parseDouble(rawBlueSpawn[0]), Double.parseDouble(rawBlueSpawn[1]), Double.parseDouble(rawBlueSpawn[2]), Float.parseFloat(rawBlueSpawn[3]), Float.parseFloat(rawBlueSpawn[4]));
+            Location spectate = new Location(world, Double.parseDouble(rawSpectateSpawn[0]), Double.parseDouble(rawSpectateSpawn[1]), Double.parseDouble(rawSpectateSpawn[2]), Float.parseFloat(rawSpectateSpawn[3]), Float.parseFloat(rawSpectateSpawn[4]));
             boolean lavaInstantKill = section.getBoolean("lava-instant-kill");
             boolean waterInstantKill = section.getBoolean("water-instant-kill");
             boolean durability = section.getBoolean("durability");
             boolean hunger = section.getBoolean("hunger");
-            Arena arena = new Arena(id, name.getMessage(), author.getMessage(), worldName, redSpawn, blueSpawn, lavaInstantKill, waterInstantKill, durability, hunger);
+            Arena arena = new Arena(id, name.getMessage(), author.getMessage(), worldName, redSpawns, blueSpawns, spectate, lavaInstantKill, waterInstantKill, durability, hunger);
             getConfigManager().getManager().getArenaManager().getArenas().add(arena);
             getConfigManager().getManager().getArenaManager().getArenaById().put(id, arena);
         }

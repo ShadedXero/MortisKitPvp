@@ -37,12 +37,8 @@ public class Game {
     }
 
     private void teleport() {
-        for (GamePlayer gamePlayer : getRedGamePlayers()) {
-            arena.teleportRed(gamePlayer.getPlayer(), world);
-        }
-        for (GamePlayer gamePlayer : getBlueGamePlayers()) {
-            arena.teleportBlue(gamePlayer.getPlayer(), world);
-        }
+        arena.teleportRed(getRedPlayers(), world);
+        arena.teleportBlue(getBluePlayers(), world);
     }
 
     private void openKitSelector(KitManager kitManager) {
@@ -84,6 +80,22 @@ public class Game {
             }
         }
         return null;
+    }
+
+    public List<Player> getRedPlayers() {
+        List<Player> redPlayers = new ArrayList<>();
+        for (GamePlayer gamePlayer : getRedGamePlayers()) {
+            redPlayers.add(gamePlayer.getPlayer());
+        }
+        return redPlayers;
+    }
+
+    public List<Player> getBluePlayers() {
+        List<Player> bluePlayers = new ArrayList<>();
+        for (GamePlayer gamePlayer : getBlueGamePlayers()) {
+            bluePlayers.add(gamePlayer.getPlayer());
+        }
+        return bluePlayers;
     }
 
     public List<GamePlayer> getRedGamePlayers() {
@@ -132,13 +144,6 @@ public class Game {
             blueGamePlayers.add(gamePlayer);
         }
         return blueGamePlayers;
-    }
-
-    public void sendMessage(Component message) {
-        for (GamePlayer gamePlayer : gamePlayers) {
-            Player player = gamePlayer.getPlayer();
-            player.sendMessage(message);
-        }
     }
 
     public void showCountdown(GameManager gameManager) {

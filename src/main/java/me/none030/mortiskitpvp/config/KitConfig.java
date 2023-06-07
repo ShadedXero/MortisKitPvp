@@ -14,6 +14,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class KitConfig extends Config {
@@ -49,7 +50,19 @@ public class KitConfig extends Config {
             return null;
         }
         int randomKitSlot = menu.getInt("random-kit-slot");
-        return new KitSettings(size, randomKitIcon, randomKitSlot);
+        ConfigurationSection section = menu.getConfigurationSection("kit-slots");
+        if (section == null) {
+            return null;
+        }
+        HashMap<String, Integer> slotByKitId = new HashMap<>();
+        for (String kitId : section.getKeys(false)) {
+            if (kitId == null) {
+                continue;
+            }
+            int slot = section.getInt(kitId);
+            slotByKitId.put(kitId, slot);
+        }
+        return new KitSettings(size, randomKitIcon, randomKitSlot, slotByKitId);
     }
 
     private void loadKits(ConfigurationSection kits) {

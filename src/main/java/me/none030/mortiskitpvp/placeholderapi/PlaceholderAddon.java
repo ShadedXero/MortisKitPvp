@@ -1,6 +1,7 @@
 package me.none030.mortiskitpvp.placeholderapi;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import me.none030.mortiskitpvp.kitpvp.battlefield.Battlefield;
 import me.none030.mortiskitpvp.kitpvp.game.Game;
 import me.none030.mortiskitpvp.kitpvp.kits.Kit;
 import org.bukkit.entity.Player;
@@ -40,6 +41,10 @@ public class PlaceholderAddon extends PlaceholderExpansion {
             return placeholderManager.getMessage("NO_KIT");
         }
         if (params.equalsIgnoreCase("map")) {
+            Battlefield battlefield = placeholderManager.getKillStreakManager().getGameManager().getBattlefieldManager().getBattlefield();
+            if (battlefield.isWorld(player.getWorld())) {
+                return battlefield.getName();
+            }
             Game game = placeholderManager.getKillStreakManager().getGameManager().getGameByPlayer().get(player);
             if (game != null) {
                 return game.getArena().getName();
@@ -47,6 +52,10 @@ public class PlaceholderAddon extends PlaceholderExpansion {
             return null;
         }
         if (params.equalsIgnoreCase("author")) {
+            Battlefield battlefield = placeholderManager.getKillStreakManager().getGameManager().getBattlefieldManager().getBattlefield();
+            if (battlefield.isWorld(player.getWorld())) {
+                return battlefield.getAuthor();
+            }
             Game game = placeholderManager.getKillStreakManager().getGameManager().getGameByPlayer().get(player);
             if (game != null) {
                 return game.getArena().getAuthor();

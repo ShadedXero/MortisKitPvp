@@ -6,6 +6,7 @@ import me.none030.mortiskitpvp.MortisKitPvp;
 import me.none030.mortiskitpvp.kitpvp.duels.invite.DuelInvite;
 import me.none030.mortiskitpvp.kitpvp.duels.invite.Invite;
 import me.none030.mortiskitpvp.kitpvp.duels.invite.PartyInvite;
+import me.none030.mortiskitpvp.kitpvp.game.Game;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -40,6 +41,11 @@ public class DuelCommand implements TabExecutor {
             if (args[0].equalsIgnoreCase("accept")) {
                 if (!player.hasPermission("mortiskitpvp.duel.accept")) {
                     player.sendMessage(duelManager.getMessage("NO_PERMISSION"));
+                    return false;
+                }
+                Game game = duelManager.getGameManager().getGameByPlayer().get(player);
+                if (game != null) {
+                    player.sendMessage(duelManager.getMessage("ALREADY_IN_GAME"));
                     return false;
                 }
                 Invite invite = duelManager.getInviteByInvited().get(player);

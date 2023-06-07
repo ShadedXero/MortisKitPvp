@@ -1,15 +1,17 @@
 package me.none030.mortiskitpvp.kitpvp.kits;
 
+import me.none030.mortisheads.heads.Head;
+import me.none030.mortiskitpvp.MortisKitPvp;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.List;
 
 public class Kit {
 
+    private final MortisKitPvp plugin = MortisKitPvp.getInstance();
     private final String id;
     private final String name;
     private final String permission;
@@ -36,7 +38,14 @@ public class Kit {
         clearInventory(player);
         clearPotionEffects(player);
         for (int i = 0; i < inventory.getSize(); i++) {
-            player.getInventory().setItem(i, inventory.getItem(i));
+            ItemStack item = inventory.getItem(i);
+            player.getInventory().setItem(i, item);
+        }
+        if (plugin.hasHeads()) {
+            Head head = plugin.getHeads().getManager().getHeadManager().getHead(player.getInventory().getHelmet());
+            if (head != null) {
+                head.addEffects(plugin.getHeads().getManager().getHeadManager(), player);
+            }
         }
         applyEffects(player);
     }

@@ -2,9 +2,14 @@ menu:
   size: 27
   random-kit-icon: RANDOM_KIT
   random-kit-slot: 26
+  kit-slots:
+    SWORD_PVP: 0
+    AXE_PVP: 1
 messages:
   menu-title: '&aKit Selector'
   kit-changed: '&aYou have selected your kit'
+  not-permitted: "&cYou need %permission% permission to use this"
+  permitted: "&aClick here to select this kit"
 kits:
   SWORD_PVP:
     name: '&aSword_PvP'

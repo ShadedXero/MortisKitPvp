@@ -5,6 +5,7 @@ import me.none030.mortiskitpvp.kitpvp.kits.Kit;
 import me.none030.mortiskitpvp.kitpvp.kits.KitMenu;
 import me.none030.mortiskitpvp.kitpvp.matchmakings.MatchMakingMenu;
 import me.none030.mortiskitpvp.utils.MessageUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -30,72 +31,81 @@ public class KitPvpCommand implements TabExecutor {
             return false;
         }
         if (args[0].equalsIgnoreCase("kit")) {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage(new MessageUtils("&cThis command can only be executed by a player").color());
+            if (args[1].equalsIgnoreCase("add")) {
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage(new MessageUtils("&cThis command can only be executed by a player").color());
+                    return false;
+                }
+                Player player = (Player) sender;
+                if (!sender.hasPermission("mortiskitpvp.kit.add")) {
+                    player.sendMessage(new MessageUtils("&cYou don't have permission to use this").color());
+                    return false;
+                }
+                if (args.length != 6) {
+                    player.sendMessage(new MessageUtils("&cUsage: /kitpvp kit add <id> <name> <permission> <icon-id>").color());
+                    return false;
+                }
+                String id = args[2];
+                String name = args[3];
+                String permission = args[4];
+                String iconId = args[5];
+                ItemStack icon = kitPvpManager.getItemManager().getItem(iconId);
+                if (icon == null) {
+                    player.sendMessage(new MessageUtils("&cPlease enter a valid item id").color());
+                    return false;
+                }
+                Kit kit = new Kit(id, name, permission, iconId, icon, player.getInventory(), new ArrayList<>());
+                kitPvpManager.getKitManager().addKit(kit);
+                player.sendMessage(new MessageUtils("&cAdded the kit").color());
+                return true;
+            }
+            if (args[1].equalsIgnoreCase("remove")) {
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage(new MessageUtils("&cThis command can only be executed by a player").color());
+                    return false;
+                }
+                Player player = (Player) sender;
+                if (!sender.hasPermission("mortiskitpvp.kit.remove")) {
+                    player.sendMessage(new MessageUtils("&cYou don't have permission to use this").color());
+                    return false;
+                }
+                if (args.length != 3) {
+                    player.sendMessage(new MessageUtils("&cUsage: /kitpvp kit remove <kit-id>").color());
+                    return false;
+                }
+                Kit kit = kitPvpManager.getKitManager().getKitById().get(args[2]);
+                if (kit == null) {
+                    player.sendMessage(new MessageUtils("&cKit could not be found").color());
+                    return false;
+                }
+                kitPvpManager.getKitManager().removeKit(kit);
+                player.sendMessage(new MessageUtils("&cRemoved the kit").color());
+                return true;
+            }
+            Player target = Bukkit.getPlayer(args[1]);
+            if (target == null) {
+                sender.sendMessage(new MessageUtils("&cPlease enter a valid target").color());
                 return false;
             }
-            Player player = (Player) sender;
-            if (!player.hasPermission("mortiskitpvp.kit")) {
-                player.sendMessage(new MessageUtils("&cYou don't have permission to use this").color());
-                return false;
-            }
-            if (args.length < 2) {
-                KitMenu menu = new KitMenu(kitPvpManager.getKitManager(), player);
-                menu.open(player);
-            } else {
-                if (args[1].equalsIgnoreCase("add")) {
-                    if (!sender.hasPermission("mortiskitpvp.kit.add")) {
-                        player.sendMessage(new MessageUtils("&cYou don't have permission to use this").color());
-                        return false;
-                    }
-                    if (args.length != 6) {
-                        player.sendMessage(new MessageUtils("&cUsage: /kitpvp kit add <id> <name> <permission> <icon-id>").color());
-                        return false;
-                    }
-                    String id = args[2];
-                    String name = args[3];
-                    String permission = args[4];
-                    String iconId = args[5];
-                    ItemStack icon = kitPvpManager.getItemManager().getItem(iconId);
-                    if (icon == null) {
-                        player.sendMessage(new MessageUtils("&cPlease enter a valid item id").color());
-                        return false;
-                    }
-                    Kit kit = new Kit(id, name, permission, iconId, icon, player.getInventory(), new ArrayList<>());
-                    kitPvpManager.getKitManager().addKit(kit);
-                    player.sendMessage(new MessageUtils("&cAdded the kit").color());
-                }
-                if (args[1].equalsIgnoreCase("remove")) {
-                    if (!sender.hasPermission("mortiskitpvp.kit.remove")) {
-                        player.sendMessage(new MessageUtils("&cYou don't have permission to use this").color());
-                        return false;
-                    }
-                    if (args.length != 3) {
-                        player.sendMessage(new MessageUtils("&cUsage: /kitpvp kit remove <kit-id>").color());
-                        return false;
-                    }
-                    Kit kit = kitPvpManager.getKitManager().getKitById().get(args[2]);
-                    if (kit == null) {
-                        player.sendMessage(new MessageUtils("&cKit could not be found").color());
-                        return false;
-                    }
-                    kitPvpManager.getKitManager().removeKit(kit);
-                    player.sendMessage(new MessageUtils("&cRemoved the kit").color());
-                }
-            }
+            KitMenu menu = new KitMenu(kitPvpManager.getKitManager(), target);
+            menu.open(target);
         }
         if (args[0].equalsIgnoreCase("matchmaking")) {
-            if (!(sender instanceof Player)) {
-                sender.sendMessage(new MessageUtils("&cThis command can only be executed by a player").color());
+            if (!sender.hasPermission("mortiskitpvp.matchmaking")) {
+                sender.sendMessage(new MessageUtils("&cYou don't have permission to use this").color());
                 return false;
             }
-            Player player = (Player) sender;
-            if (!player.hasPermission("mortiskitpvp.matchmaking")) {
-                player.sendMessage(new MessageUtils("&cYou don't have permission to use this").color());
+            if (args.length != 2) {
+                sender.sendMessage(new MessageUtils("&cUsage: /kitpvp matchmaking <player_name>").color());
+                return false;
+            }
+            Player target = Bukkit.getPlayer(args[1]);
+            if (target == null) {
+                sender.sendMessage(new MessageUtils("&cPlease enter a valid target").color());
                 return false;
             }
             MatchMakingMenu menu = kitPvpManager.getMatchMakingManager().getMenu();
-            menu.open(player);
+            menu.open(target);
         }
         if (args[0].equalsIgnoreCase("purge")) {
             if (!sender.hasPermission("mortiskitpvp.purge")) {

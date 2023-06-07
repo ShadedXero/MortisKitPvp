@@ -14,14 +14,12 @@ public class KitManager extends Manager {
 
     private final KitConfig kitConfig;
     private final KitSettings settings;
-    private final List<Kit> kits;
     private final HashMap<String, Kit> kitById;
     private final HashMap<Player, String> kitIdByPlayer;
 
     public KitManager(KitConfig kitConfig, KitSettings settings) {
         this.kitConfig = kitConfig;
         this.settings = settings;
-        this.kits = new ArrayList<>();
         this.kitById = new HashMap<>();
         this.kitIdByPlayer = new HashMap<>();
         MortisKitPvp plugin = MortisKitPvp.getInstance();
@@ -29,13 +27,11 @@ public class KitManager extends Manager {
     }
 
     public void addKit(Kit kit) {
-        kits.add(kit);
         kitById.put(kit.getId(), kit);
         kitConfig.addKit(kit);
     }
 
     public void removeKit(Kit kit) {
-        kits.remove(kit);
         kitById.remove(kit.getId());
         kitConfig.removeKit(kit.getId());
     }
@@ -64,12 +60,16 @@ public class KitManager extends Manager {
 
     public List<Kit> getAccessibleKits(Player player) {
         List<Kit> kitList = new ArrayList<>();
-        for (Kit kit : kits) {
+        for (Kit kit : getKits()) {
             if (kit.hasPermission(player)) {
                 kitList.add(kit);
             }
         }
         return kitList;
+    }
+
+    public List<Kit> getKits() {
+        return new ArrayList<>(kitById.values());
     }
 
     public KitConfig getKitConfig() {
@@ -78,10 +78,6 @@ public class KitManager extends Manager {
 
     public KitSettings getSettings() {
         return settings;
-    }
-
-    public List<Kit> getKits() {
-        return kits;
     }
 
     public HashMap<String, Kit> getKitById() {

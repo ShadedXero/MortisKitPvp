@@ -1,14 +1,18 @@
 package me.none030.mortiskitpvp.kitpvp.battlefield;
 
+import me.none030.mortiskitpvp.MortisKitPvp;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 public class Battlefield {
 
+    private final MortisKitPvp plugin = MortisKitPvp.getInstance();
+    private final String name;
+    private final String author;
     private final World world;
     private final Location spawnPoint;
     private final Location protectedOrigin;
@@ -17,7 +21,9 @@ public class Battlefield {
     private final boolean durability;
     private final boolean hunger;
 
-    public Battlefield(World world, Location spawnPoint, Location protectedOrigin, Location protectedEnd, ItemStack elytra, boolean durability, boolean hunger) {
+    public Battlefield(String name, String author, World world, Location spawnPoint, Location protectedOrigin, Location protectedEnd, ItemStack elytra, boolean durability, boolean hunger) {
+        this.name = name;
+        this.author = author;
         this.world = world;
         this.spawnPoint = spawnPoint;
         this.protectedOrigin = protectedOrigin;
@@ -28,11 +34,25 @@ public class Battlefield {
     }
 
     public void reset(Player player) {
+        if (plugin.hasHeads()) {
+            plugin.getHeads().getManager().getHeadManager().removeTaskId(player);
+        }
+        player.setGameMode(GameMode.SURVIVAL);
         player.getInventory().clear();
+        removePotionEffects(player);
         player.setHealth(20);
+        player.setAbsorptionAmount(0);
+        player.damage(0.0001);
+    }
+
+    private void removePotionEffects(Player player) {
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
+        }
     }
 
     public void teleport(Player player) {
+        reset(player);
         player.teleport(spawnPoint);
     }
 
@@ -72,6 +92,14 @@ public class Battlefield {
 
     public boolean isWorld(World world) {
         return this.world.getName().equals(world.getName());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 
     public World getWorld() {

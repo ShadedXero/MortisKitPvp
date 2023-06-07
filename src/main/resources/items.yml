@@ -30,7 +30,11 @@ items:
     material: DIAMOND_SWORD
     amount: 1
     name: "&aSword PvP"
+    lore:
+      - "%permission%"
   AXE_PVP:
     material: IRON_AXE
     amount: 1
     name: "&aAxe PvP"
+    lore:
+      - "%permission%"

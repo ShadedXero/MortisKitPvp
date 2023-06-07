@@ -1,6 +1,5 @@
 package me.none030.mortiskitpvp.kitpvp.battlefield;
 
-import io.papermc.paper.event.player.AsyncChatEvent;
 import me.none030.mortiskitpvp.MortisKitPvp;
 import me.none030.mortiskitpvp.armorequipevent.ArmorEquipEvent;
 import me.none030.mortiskitpvp.armorequipevent.ArmorType;
@@ -15,7 +14,6 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
-import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 public class BattlefieldListener implements Listener {
 
@@ -35,30 +33,11 @@ public class BattlefieldListener implements Listener {
     }
 
     @EventHandler
-    public void onSpawn(PlayerSpawnLocationEvent e) {
-        Player player = e.getPlayer();
-        Battlefield battlefield = battlefieldManager.getBattlefield();
-        battlefield.teleport(player);
-        battlefield.addElytra(player);
-    }
-
-    @EventHandler
     public void onReSpawn(PlayerRespawnEvent e) {
         Player player = e.getPlayer();
         Battlefield battlefield = battlefieldManager.getBattlefield();
         battlefield.teleport(player);
         battlefield.addElytra(player);
-    }
-
-    @EventHandler
-    public void onWorldChange(PlayerChangedWorldEvent e) {
-        Player player = e.getPlayer();
-        Battlefield battlefield = battlefieldManager.getBattlefield();
-        battlefield.reset(player);
-        if (!battlefield.isWorld(e.getFrom())) {
-            return;
-        }
-        battlefieldManager.getUnsafePlayers().remove(player);
     }
 
     @EventHandler
@@ -69,17 +48,6 @@ public class BattlefieldListener implements Listener {
             return;
         }
         e.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onChat(AsyncChatEvent e) {
-        Player player = e.getPlayer();
-        Battlefield battlefield = battlefieldManager.getBattlefield();
-        if (!battlefield.isWorld(player.getWorld())) {
-            return;
-        }
-        e.setCancelled(true);
-        player.getWorld().sendMessage(e.message());
     }
 
     @EventHandler
@@ -124,16 +92,20 @@ public class BattlefieldListener implements Listener {
                 battlefieldManager.getUnsafePlayers().add(player);
             }
         }
-        if (!battlefield.hasElytra(player)) {
+        if (!battlefieldManager.getUnsafePlayers().contains(player)) {
             return;
         }
-        if (!battlefieldManager.getUnsafePlayers().contains(player)) {
+        if (battlefieldManager.getWithoutElytra().contains(player)) {
+            return;
+        }
+        if (!battlefield.hasElytra(player)) {
             return;
         }
         if (!((LivingEntity) player).isOnGround()) {
             return;
         }
         battlefield.removeElytra(player);
+        battlefieldManager.getWithoutElytra().add(player);
         Kit kit = battlefieldManager.getKitManager().getKit(player);
         if (kit == null) {
             Kit randomKit = battlefieldManager.getKitManager().getRandomKit(player);
@@ -148,6 +120,9 @@ public class BattlefieldListener implements Listener {
     @EventHandler
     public void onUnEquipArmor(ArmorEquipEvent e) {
         Player player = e.getPlayer();
+        if (battlefieldManager.getWithoutElytra().contains(player)) {
+            return;
+        }
         if (!e.getType().equals(ArmorType.CHESTPLATE)) {
             return;
         }
@@ -171,16 +146,33 @@ public class BattlefieldListener implements Listener {
         if (!battlefield.isWorld(player.getWorld())) {
             return;
         }
+        battlefieldManager.getWithoutElytra().remove(player);
         battlefieldManager.getUnsafePlayers().remove(player);
+    }
+
+    @EventHandler
+    public void onWorldChange(PlayerChangedWorldEvent e) {
+        Player player = e.getPlayer();
+        Battlefield battlefield = battlefieldManager.getBattlefield();
+        battlefield.reset(player);
+        if (battlefield.isWorld(e.getFrom())) {
+            battlefieldManager.getWithoutElytra().remove(player);
+            battlefieldManager.getUnsafePlayers().remove(player);
+        }
+        if (battlefield.isWorld(e.getPlayer().getWorld())) {
+            battlefield.addElytra(player);
+        }
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
         Battlefield battlefield = battlefieldManager.getBattlefield();
+        battlefield.reset(player);
         if (!battlefield.isWorld(player.getWorld())) {
             return;
         }
+        battlefieldManager.getWithoutElytra().remove(player);
         battlefieldManager.getUnsafePlayers().remove(player);
     }
 }

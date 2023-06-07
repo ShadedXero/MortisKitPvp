@@ -1,16 +1,12 @@
 package me.none030.mortiskitpvp.kitpvp.game;
 
-import io.papermc.paper.event.player.AsyncChatEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerItemDamageEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 
 public class GameListener implements Listener {
 
@@ -18,17 +14,6 @@ public class GameListener implements Listener {
 
     public GameListener(GameManager gameManager) {
         this.gameManager = gameManager;
-    }
-
-    @EventHandler
-    public void onChat(AsyncChatEvent e) {
-        Player player = e.getPlayer();
-        Game game = gameManager.getGameByPlayer().get(player);
-        if (game == null) {
-            return;
-        }
-        e.setCancelled(true);
-        game.sendMessage(e.message());
     }
 
     @EventHandler
@@ -122,7 +107,7 @@ public class GameListener implements Listener {
         if (gamePlayer == null) {
             return;
         }
-        gamePlayer.setSpectating(true);
+        gamePlayer.setSpectating(game.getArena(), game.getWorld(), true);
         game.check(gameManager);
     }
 
@@ -137,7 +122,7 @@ public class GameListener implements Listener {
         if (gamePlayer == null) {
            return;
         }
-        gamePlayer.setSpectating(true);
+        gamePlayer.setSpectating(game.getArena(), game.getWorld(), true);
         game.check(gameManager);
     }
 

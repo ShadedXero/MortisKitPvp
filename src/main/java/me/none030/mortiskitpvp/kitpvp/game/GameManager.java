@@ -35,6 +35,7 @@ public class GameManager extends Manager {
         check();
         plugin.getServer().getPluginManager().registerEvents(new GameListener(this), plugin);
         plugin.getServer().getPluginCommand("leave").setExecutor(new LeaveCommand(this));
+        plugin.getServer().getPluginCommand("spectate").setExecutor(new SpectateCommand(this));
     }
 
     private void check() {

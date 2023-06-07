@@ -5,6 +5,7 @@ api-version: 1.13
 softdepend:
   - PlaceholderAPI
   - Parties
+  - MortisHeads
 depend:
   - Multiverse-Core
 commands:
@@ -20,3 +21,6 @@ commands:
   duel:
     aliases:
       - mortisduel
+  spectate:
+    aliases:
+      - mortisspectate

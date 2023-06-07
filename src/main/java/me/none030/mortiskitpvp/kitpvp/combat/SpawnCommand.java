@@ -33,7 +33,10 @@ public class SpawnCommand implements CommandExecutor {
         if (battlefield == null) {
             return false;
         }
-        player.teleport(battlefield.getSpawnPoint());
+        combatManager.getBattlefieldManager().getUnsafePlayers().remove(player);
+        combatManager.getBattlefieldManager().getWithoutElytra().remove(player);
+        battlefield.teleport(player);
+        battlefield.addElytra(player);
         player.sendMessage(combatManager.getMessage("TELEPORTED"));
         return false;
     }

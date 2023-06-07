@@ -38,6 +38,9 @@ public class ItemConfig extends Config {
             }
             int amount = section.getInt("amount");
             ItemBuilder builder = new ItemBuilder(material, amount);
+            if (section.contains("texture")) {
+                builder.setTexture(section.getString("texture"));
+            }
             if (section.contains("custom-model-data")) {
                 builder.setCustomModelData(section.getInt("custom-model-data"));
             }
