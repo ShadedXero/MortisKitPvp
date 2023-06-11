@@ -97,21 +97,6 @@ public class GameListener implements Listener {
     }
 
     @EventHandler
-    public void onWorldChange(PlayerChangedWorldEvent e) {
-        Player player = e.getPlayer();
-        Game game = gameManager.getGameByPlayer().get(player);
-        if (game == null || !e.getFrom().equals(game.getWorld())) {
-            return;
-        }
-        GamePlayer gamePlayer = game.getGamePlayer(player);
-        if (gamePlayer == null) {
-            return;
-        }
-        gamePlayer.setSpectating(game.getArena(), game.getWorld(), true);
-        game.check(gameManager);
-    }
-
-    @EventHandler
     public void onDeath(PlayerDeathEvent e) {
         Player player = e.getPlayer();
         Game game = gameManager.getGameByPlayer().get(player);

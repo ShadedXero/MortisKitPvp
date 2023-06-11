@@ -6,6 +6,7 @@ import me.none030.mortiskitpvp.kitpvp.kits.KitManager;
 import me.none030.mortiskitpvp.kitpvp.kits.KitMenu;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -148,6 +149,55 @@ public class Game {
         return blueGamePlayers;
     }
 
+    public void checkGamePlayers() {
+        for (GamePlayer gamePlayer : gamePlayers) {
+            switch (gamePlayer.getTeam()) {
+                case NONE: {
+                    if (!world.equals(gamePlayer.getPlayer().getWorld())) {
+                        arena.teleportSpectator(gamePlayer.getPlayer(), world);
+                    }
+                    if (!gamePlayer.getPlayer().getGameMode().equals(GameMode.SPECTATOR)) {
+                        gamePlayer.getPlayer().setGameMode(GameMode.SPECTATOR);
+                    }
+                }
+                case BLUE: {
+                    if (gamePlayer.isSpectating()) {
+                        if (!world.equals(gamePlayer.getPlayer().getWorld())) {
+                            arena.teleportSpectator(gamePlayer.getPlayer(), world);
+                        }
+                        if (!gamePlayer.getPlayer().getGameMode().equals(GameMode.SPECTATOR)) {
+                            gamePlayer.getPlayer().setGameMode(GameMode.SPECTATOR);
+                        }
+                    }else {
+                        if (!world.equals(gamePlayer.getPlayer().getWorld())) {
+                            arena.teleportBlue(gamePlayer.getPlayer(), world);
+                        }
+                        if (!gamePlayer.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) {
+                            gamePlayer.getPlayer().setGameMode(GameMode.SURVIVAL);
+                        }
+                    }
+                }
+                case RED: {
+                    if (gamePlayer.isSpectating()) {
+                        if (!world.equals(gamePlayer.getPlayer().getWorld())) {
+                            arena.teleportSpectator(gamePlayer.getPlayer(), world);
+                        }
+                        if (!gamePlayer.getPlayer().getGameMode().equals(GameMode.SPECTATOR)) {
+                            gamePlayer.getPlayer().setGameMode(GameMode.SPECTATOR);
+                        }
+                    }else {
+                        if (!world.equals(gamePlayer.getPlayer().getWorld())) {
+                            arena.teleportRed(gamePlayer.getPlayer(), world);
+                        }
+                        if (!gamePlayer.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) {
+                            gamePlayer.getPlayer().setGameMode(GameMode.SURVIVAL);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void showCountdown(GameManager gameManager) {
         long timeLeft = gameManager.getStartTime() - time;
         Component title = Component.text(gameManager.getMessage("COUNTDOWN_TITLE").replace("%time%", String.valueOf(timeLeft)));
@@ -159,67 +209,67 @@ public class Game {
     }
 
     public void showResult(GameManager gameManager) {
-        if (winner.equals(TeamType.NONE)) {
-            for (GamePlayer gamePlayer : getRedGamePlayers()) {
-                Component title = Component.text(gameManager.getMessage("TIE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                Component subTitle = Component.text(gameManager.getMessage("TIE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+        switch (winner) {
+            case NONE: {
+                List<GamePlayer> gamePlayers = new ArrayList<>(getRedGamePlayers());
+                gamePlayers.addAll(getBlueGamePlayers());
+                for (GamePlayer gamePlayer : gamePlayers) {
+                    Component title = Component.text(gameManager.getMessage("TIE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                    Component subTitle = Component.text(gameManager.getMessage("TIE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                    gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+                }
             }
-            for (GamePlayer gamePlayer : getBlueGamePlayers()) {
-                Component title = Component.text(gameManager.getMessage("TIE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                Component subTitle = Component.text(gameManager.getMessage("TIE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+            case RED: {
+                for (GamePlayer gamePlayer : getRedGamePlayers()) {
+                    Component title = Component.text(gameManager.getMessage("WIN_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                    Component subTitle = Component.text(gameManager.getMessage("WIN_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                    gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+                }
+                for (GamePlayer gamePlayer : getBlueGamePlayers()) {
+                    Component title = Component.text(gameManager.getMessage("LOSE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                    Component subTitle = Component.text(gameManager.getMessage("LOSE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                    gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+                }
             }
-        }
-        if (winner.equals(TeamType.RED)) {
-            for (GamePlayer gamePlayer : getRedGamePlayers()) {
-                Component title = Component.text(gameManager.getMessage("WIN_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                Component subTitle = Component.text(gameManager.getMessage("WIN_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
-            }
-            for (GamePlayer gamePlayer : getBlueGamePlayers()) {
-                Component title = Component.text(gameManager.getMessage("LOSE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                Component subTitle = Component.text(gameManager.getMessage("LOSE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
-            }
-        }
-        if (winner.equals(TeamType.BLUE)) {
-            for (GamePlayer gamePlayer : getBlueGamePlayers()) {
-                Component title = Component.text(gameManager.getMessage("WIN_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                Component subTitle = Component.text(gameManager.getMessage("WIN_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
-            }
-            for (GamePlayer gamePlayer : getRedGamePlayers()) {
-                Component title = Component.text(gameManager.getMessage("LOSE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                Component subTitle = Component.text(gameManager.getMessage("LOSE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+            case BLUE: {
+                for (GamePlayer gamePlayer : getBlueGamePlayers()) {
+                    Component title = Component.text(gameManager.getMessage("WIN_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                    Component subTitle = Component.text(gameManager.getMessage("WIN_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                    gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+                }
+                for (GamePlayer gamePlayer : getRedGamePlayers()) {
+                    Component title = Component.text(gameManager.getMessage("LOSE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                    Component subTitle = Component.text(gameManager.getMessage("LOSE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                    gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+                }
             }
         }
     }
 
     public void sendResultMessage(GameManager gameManager) {
-        if (winner.equals(TeamType.NONE)) {
-            for (GamePlayer gamePlayer : getRedGamePlayers()) {
-                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("TIE").replace("%team_name%", gamePlayer.getTeamName()));
+        switch (winner) {
+            case NONE: {
+                List<GamePlayer> gamePlayers = new ArrayList<>(getRedGamePlayers());
+                gamePlayers.addAll(getBlueGamePlayers());
+                for (GamePlayer gamePlayer : gamePlayers) {
+                    gamePlayer.getPlayer().sendMessage(gameManager.getMessage("TIE").replace("%team_name%", gamePlayer.getTeamName()));
+                }
             }
-            for (GamePlayer gamePlayer : getBlueGamePlayers()) {
-                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("TIE").replace("%team_name%", gamePlayer.getTeamName()));
+            case RED: {
+                for (GamePlayer gamePlayer : getRedGamePlayers()) {
+                    gamePlayer.getPlayer().sendMessage(gameManager.getMessage("WIN").replace("%team_name%", gamePlayer.getTeamName()));
+                }
+                for (GamePlayer gamePlayer : getBlueGamePlayers()) {
+                    gamePlayer.getPlayer().sendMessage(gameManager.getMessage("LOSE").replace("%team_name%", gamePlayer.getTeamName()));
+                }
             }
-        }
-        if (winner.equals(TeamType.RED)) {
-            for (GamePlayer gamePlayer : getRedGamePlayers()) {
-                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("WIN").replace("%team_name%", gamePlayer.getTeamName()));
-            }
-            for (GamePlayer gamePlayer : getBlueGamePlayers()) {
-                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("LOSE").replace("%team_name%", gamePlayer.getTeamName()));
-            }
-        }
-        if (winner.equals(TeamType.BLUE)) {
-            for (GamePlayer gamePlayer : getBlueGamePlayers()) {
-                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("WIN").replace("%team_name%", gamePlayer.getTeamName()));
-            }
-            for (GamePlayer gamePlayer : getRedGamePlayers()) {
-                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("LOSE").replace("%team_name%", gamePlayer.getTeamName()));
+            case BLUE: {
+                for (GamePlayer gamePlayer : getBlueGamePlayers()) {
+                    gamePlayer.getPlayer().sendMessage(gameManager.getMessage("WIN").replace("%team_name%", gamePlayer.getTeamName()));
+                }
+                for (GamePlayer gamePlayer : getRedGamePlayers()) {
+                    gamePlayer.getPlayer().sendMessage(gameManager.getMessage("LOSE").replace("%team_name%", gamePlayer.getTeamName()));
+                }
             }
         }
     }

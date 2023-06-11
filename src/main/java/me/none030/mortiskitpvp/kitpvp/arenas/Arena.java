@@ -56,7 +56,7 @@ public class Arena {
 
     public void delete(World world) {
         MVWorldManager worldManager = plugin.getMultiverseAPI().getMVWorldManager();
-        worldManager.deleteWorld(world.getName(), true);
+        worldManager.deleteWorld(world.getName(), true, true);
     }
 
     public void teleportRed(List<Player> players, World world) {
@@ -83,6 +83,14 @@ public class Arena {
                 player.teleport(getBlueLocation(world));
             }
         }
+    }
+
+    public void teleportRed(Player player, World world) {
+        player.teleport(getRedLocation(world));
+    }
+
+    public void teleportBlue(Player player, World world) {
+        player.teleport(getBlueLocation(world));
     }
 
     public void teleportSpectator(Player player, World world) {

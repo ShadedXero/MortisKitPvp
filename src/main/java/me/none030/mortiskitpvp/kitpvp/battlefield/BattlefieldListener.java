@@ -151,20 +151,6 @@ public class BattlefieldListener implements Listener {
     }
 
     @EventHandler
-    public void onWorldChange(PlayerChangedWorldEvent e) {
-        Player player = e.getPlayer();
-        Battlefield battlefield = battlefieldManager.getBattlefield();
-        battlefield.reset(player);
-        if (battlefield.isWorld(e.getFrom())) {
-            battlefieldManager.getWithoutElytra().remove(player);
-            battlefieldManager.getUnsafePlayers().remove(player);
-        }
-        if (battlefield.isWorld(e.getPlayer().getWorld())) {
-            battlefield.addElytra(player);
-        }
-    }
-
-    @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
         Battlefield battlefield = battlefieldManager.getBattlefield();

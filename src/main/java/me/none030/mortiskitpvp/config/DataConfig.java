@@ -24,11 +24,11 @@ public class DataConfig extends Config {
         for (String worldName : worlds) {
             World world = Bukkit.getWorld(worldName);
             if (world == null) {
-                getPlugin().getMultiverseAPI().getMVWorldManager().deleteWorld(worldName, true);
+                getPlugin().getMultiverseAPI().getMVWorldManager().deleteWorld(worldName, true, true);
                 remove(worldName);
                 continue;
             }
-            getPlugin().getMultiverseAPI().getMVWorldManager().deleteWorld(worldName, true);
+            getPlugin().getMultiverseAPI().getMVWorldManager().deleteWorld(worldName, true, true);
             remove(world);
         }
     }

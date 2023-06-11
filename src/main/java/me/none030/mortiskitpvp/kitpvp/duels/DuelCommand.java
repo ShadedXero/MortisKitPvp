@@ -48,11 +48,14 @@ public class DuelCommand implements TabExecutor {
                     player.sendMessage(duelManager.getMessage("ALREADY_IN_GAME"));
                     return false;
                 }
-                Invite invite = duelManager.getInviteByInvited().get(player);
+                Invite invite = duelManager.getInvite(duelManager.getInviteByInvited().get(player));
                 if (invite == null) {
                     player.sendMessage(duelManager.getMessage("NO_INVITE"));
                     return false;
                 }
+                duelManager.removePlayer(invite.getInviter());
+                duelManager.removePlayer(invite.getInvited());
+                duelManager.getInvites().remove(invite);
                 duelManager.getGameManager().start(invite);
                 player.sendMessage(duelManager.getMessage("INVITE_ACCEPTED"));
                 return true;
@@ -103,6 +106,15 @@ public class DuelCommand implements TabExecutor {
         if (args.length == 1) {
             List<String> arguments = new ArrayList<>();
             arguments.add("accept");
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                arguments.add(player.getName());
+            }
+            if (plugin.hasParties()) {
+                PartiesAPI api = plugin.getPartiesAPI();
+                for (Party party : api.getOnlineParties()) {
+                    arguments.add(party.getName());
+                }
+            }
             return arguments;
         }
         return null;

@@ -35,6 +35,7 @@ public class SpawnCommand implements CommandExecutor {
         }
         combatManager.getBattlefieldManager().getUnsafePlayers().remove(player);
         combatManager.getBattlefieldManager().getWithoutElytra().remove(player);
+        combatManager.getKillStreakManager().resetKills(player);
         battlefield.teleport(player);
         battlefield.addElytra(player);
         player.sendMessage(combatManager.getMessage("TELEPORTED"));

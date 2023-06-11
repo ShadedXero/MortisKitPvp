@@ -20,8 +20,8 @@ public class DuelManager extends Manager {
     private final GameManager gameManager;
     private final long expireTime;
     private final List<Invite> invites;
-    private final HashMap<Player, Invite> inviteByInvited;
-    private final HashMap<Player, Invite> inviteByInviter;
+    private final HashMap<Player, String> inviteByInvited;
+    private final HashMap<Player, String> inviteByInviter;
 
     public DuelManager(ArenaManager arenaManager, GameManager gameManager, long expireTime) {
         this.arenaManager = arenaManager;
@@ -45,14 +45,9 @@ public class DuelManager extends Manager {
                     Invite invite = inviteList.next();
                     invite.setTimer(invite.getTimer() + 1);
                     if (invite.getTimer() > expireTime) {
-                        inviteList.remove();
-                        continue;
-                    }
-                    if (invite.isAccepted()) {
-                        inviteList.remove();
                         removePlayer(invite.getInviter());
                         removePlayer(invite.getInvited());
-                        gameManager.start(invite);
+                        inviteList.remove();
                     }
                 }
             }
@@ -61,21 +56,40 @@ public class DuelManager extends Manager {
 
     public void removePlayer(Player player) {
         if (inviteByInvited.containsKey(player)) {
-            Invite invite = inviteByInvited.get(player);
-            inviteByInvited.remove(player);
-            inviteByInviter.remove(invite.getInviter());
+            String inviteId = inviteByInvited.get(player);
+            if (inviteId != null) {
+                Invite invite = getInvite(inviteId);
+                if (invite != null) {
+                    inviteByInvited.remove(player);
+                    inviteByInviter.remove(invite.getInviter());
+                }
+            }
         }
         if (inviteByInviter.containsKey(player)) {
-            Invite invite = inviteByInviter.get(player);
-            inviteByInviter.remove(player);
-            inviteByInvited.remove(invite.getInvited());
+            String inviteId = inviteByInviter.get(player);
+            if (inviteId != null) {
+                Invite invite = getInvite(inviteId);
+                if (invite != null) {
+                    inviteByInviter.remove(player);
+                    inviteByInvited.remove(invite.getInvited());
+                }
+            }
         }
+    }
+
+    public Invite getInvite(String id) {
+        for (Invite invite : invites) {
+            if (invite.getId().equals(id)) {
+                return invite;
+            }
+        }
+        return null;
     }
 
     public void addInvite(Invite invite) {
         removePlayer(invite.getInviter());
-        inviteByInvited.put(invite.getInvited(), invite);
-        inviteByInviter.put(invite.getInviter(), invite);
+        inviteByInvited.put(invite.getInvited(), invite.getId());
+        inviteByInviter.put(invite.getInviter(), invite.getId());
         invites.add(invite);
     }
 
@@ -95,11 +109,11 @@ public class DuelManager extends Manager {
         return invites;
     }
 
-    public HashMap<Player, Invite> getInviteByInvited() {
+    public HashMap<Player, String> getInviteByInvited() {
         return inviteByInvited;
     }
 
-    public HashMap<Player, Invite> getInviteByInviter() {
+    public HashMap<Player, String> getInviteByInviter() {
         return inviteByInviter;
     }
 }

@@ -4,30 +4,39 @@ import me.none030.mortiskitpvp.kitpvp.arenas.Arena;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.UUID;
 
 public abstract class Invite {
 
+    private final String id;
     private final Arena arena;
     private final Player inviter;
     private final Player invited;
     private final String redName;
     private final String blueName;
     private long timer;
-    private boolean accepted;
 
     public Invite(Arena arena, Player inviter, Player invited, String redName, String blueName) {
+        this.id = getRandomId();
         this.arena = arena;
         this.inviter = inviter;
         this.invited = invited;
         this.redName = redName;
         this.blueName = blueName;
-        this.accepted = false;
         timer = 0;
+    }
+
+    private String getRandomId() {
+        return UUID.randomUUID().toString();
     }
 
     public abstract List<Player> getRedPlayers();
 
     public abstract List<Player> getBluePlayers();
+
+    public String getId() {
+        return id;
+    }
 
     public Arena getArena() {
         return arena;
@@ -55,13 +64,5 @@ public abstract class Invite {
 
     public void setTimer(long timer) {
         this.timer = timer;
-    }
-
-    public boolean isAccepted() {
-        return accepted;
-    }
-
-    public void setAccepted(boolean accepted) {
-        this.accepted = accepted;
     }
 }
