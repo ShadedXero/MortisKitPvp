@@ -75,7 +75,7 @@ public class DuelCommand implements TabExecutor {
                     player.sendMessage(duelManager.getMessage("NOT_IN_PARTY"));
                     return false;
                 }
-                if (playerParty.getLeader() == null || playerParty.getLeader().equals(player.getUniqueId())) {
+                if (playerParty.getLeader() == null || !playerParty.getLeader().equals(player.getUniqueId())) {
                     player.sendMessage(duelManager.getMessage("NOT_PARTY_LEADER"));
                     return false;
                 }

@@ -56,7 +56,7 @@ public class Arena {
 
     public void delete(World world) {
         MVWorldManager worldManager = plugin.getMultiverseAPI().getMVWorldManager();
-        worldManager.deleteWorld(world.getName());
+        worldManager.deleteWorld(world.getName(), true);
     }
 
     public void teleportRed(List<Player> players, World world) {

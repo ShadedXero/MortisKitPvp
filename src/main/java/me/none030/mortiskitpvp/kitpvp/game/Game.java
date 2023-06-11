@@ -60,6 +60,8 @@ public class Game {
     }
 
     public void giveKits(KitManager kitManager) {
+        List<GamePlayer> gamePlayers = new ArrayList<>(getAliveRedGamePlayers());
+        gamePlayers.addAll(getAliveBlueGamePlayers());
         for (GamePlayer gamePlayer : gamePlayers) {
             Player player = gamePlayer.getPlayer();
             Kit kit = kitManager.getKit(player);

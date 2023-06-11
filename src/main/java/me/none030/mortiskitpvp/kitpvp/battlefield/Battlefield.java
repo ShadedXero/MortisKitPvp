@@ -43,6 +43,7 @@ public class Battlefield {
         player.setHealth(20);
         player.setAbsorptionAmount(0);
         player.damage(0.0001);
+        player.setFallDistance(0);
     }
 
     private void removePotionEffects(Player player) {
