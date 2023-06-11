@@ -282,9 +282,10 @@ public class Game {
     }
 
     public void removePlayer(GameManager gameManager, GamePlayer gamePlayer) {
+        gamePlayers.remove(gamePlayer);
+        gameManager.getGameByPlayer().remove(gamePlayer.getPlayer());
         gamePlayer.setSpectating(false);
         gameManager.getBattlefieldManager().getBattlefield().teleport(gamePlayer.getPlayer());
-        gameManager.getGameByPlayer().remove(gamePlayer.getPlayer());
     }
 
     public void check(GameManager gameManager) {

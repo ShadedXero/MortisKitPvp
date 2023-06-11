@@ -31,7 +31,6 @@ public class LeaveCommand implements CommandExecutor {
         }
         GamePlayer gamePlayer = game.getGamePlayer(player);
         game.removePlayer(gameManager, gamePlayer);
-        gameManager.getBattlefieldManager().getBattlefield().teleport(player);
         return false;
     }
 }

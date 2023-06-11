@@ -1,6 +1,7 @@
 package me.none030.mortiskitpvp.kitpvp.combat;
 
 import me.none030.mortiskitpvp.kitpvp.battlefield.Battlefield;
+import me.none030.mortiskitpvp.kitpvp.game.Game;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,6 +24,11 @@ public class SpawnCommand implements CommandExecutor {
         Player player = (Player) sender;
         if (!player.hasPermission("mortiskitpvp.spawn")) {
             player.sendMessage(combatManager.getMessage("NO_PERMISSION"));
+            return false;
+        }
+        Game game = combatManager.getKillStreakManager().getGameManager().getGameByPlayer().get(player);
+        if (game != null) {
+            player.sendMessage(combatManager.getMessage("IN_GAME"));
             return false;
         }
         if (combatManager.getCombat(player) != null) {

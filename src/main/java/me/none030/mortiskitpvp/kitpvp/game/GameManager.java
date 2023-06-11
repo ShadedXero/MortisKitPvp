@@ -47,7 +47,6 @@ public class GameManager extends Manager {
                 while (gameList.hasNext()) {
                     Game game = gameList.next();
                     game.checkGamePlayers();
-                    game.check(gameManager);
                     game.setTime(game.getTime() + 1);
                     if (!game.isStarted()) {
                         if (game.getTime() >= startTime) {
@@ -64,6 +63,8 @@ public class GameManager extends Manager {
                             game.end(gameManager);
                             gameList.remove();
                         }
+                    }else {
+                        game.check(gameManager);
                     }
                 }
             }

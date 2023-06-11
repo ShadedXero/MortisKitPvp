@@ -64,8 +64,17 @@ public class DuelCommand implements TabExecutor {
                 player.sendMessage(duelManager.getMessage("NO_PERMISSION"));
                 return false;
             }
+            Game game = duelManager.getGameManager().getGameByPlayer().get(player);
+            if (game != null) {
+                player.sendMessage(duelManager.getMessage("ALREADY_IN_GAME"));
+                return false;
+            }
             Player target = Bukkit.getPlayer(args[0]);
             if (target != null) {
+                if (player.equals(target)) {
+                    player.sendMessage(duelManager.getMessage("CANNOT_SELF_DUEL"));
+                    return false;
+                }
                 DuelInvite invite = new DuelInvite(duelManager.getArenaManager().getRandom(), player, target, player.getName(), target.getName(), Collections.singletonList(player), Collections.singletonList(target));
                 duelManager.addInvite(invite);
             }else {
@@ -90,6 +99,10 @@ public class DuelCommand implements TabExecutor {
                 target = Bukkit.getPlayer(targetParty.getLeader());
                 if (target == null) {
                     player.sendMessage(duelManager.getMessage("PARTY_LEADER_NOT_FOUND"));
+                    return false;
+                }
+                if (playerParty.equals(targetParty)) {
+                    player.sendMessage(duelManager.getMessage("CANNOT_SELF_DUEL"));
                     return false;
                 }
                 PartyInvite invite = new PartyInvite(duelManager.getArenaManager().getRandom(), player, target, playerParty.getName(), targetParty.getName(), playerParty, targetParty);
