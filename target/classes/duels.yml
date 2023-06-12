@@ -11,3 +11,4 @@ messages:
   invite-sent: "&cInvite sent"
   invited: "&cYou have been invited by %player_name% to a duel. Type /duel accept to accept the duel"
   already-in-game: "&cYou are already in a game"
+  cannot-self-duel: "&cYou cannot duel yourself"

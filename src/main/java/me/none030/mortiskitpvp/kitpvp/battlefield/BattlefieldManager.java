@@ -3,6 +3,7 @@ package me.none030.mortiskitpvp.kitpvp.battlefield;
 import me.none030.mortiskitpvp.MortisKitPvp;
 import me.none030.mortiskitpvp.kitpvp.Manager;
 import me.none030.mortiskitpvp.kitpvp.kits.KitManager;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -49,6 +50,9 @@ public class BattlefieldManager extends Manager {
                     withoutElytraIterator.remove();
                 }
                 for (Player player : battlefield.getWorld().getPlayers()) {
+                    if (!player.getGameMode().equals(GameMode.SURVIVAL)) {
+                        player.setGameMode(GameMode.SURVIVAL);
+                    }
                     if (battlefield.isProtected(player.getLocation())) {
                         if (!battlefield.hasElytra(player)) {
                             battlefield.addElytra(player);

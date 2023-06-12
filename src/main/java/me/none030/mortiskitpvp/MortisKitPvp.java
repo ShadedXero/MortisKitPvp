@@ -14,6 +14,7 @@ public final class MortisKitPvp extends JavaPlugin {
     private PartiesAPI partiesAPI;
     private MortisHeads heads;
     private boolean placeholderAPI;
+    private boolean worldGuard;
     private KitPvpManager kitPvpManager;
 
     @Override
@@ -31,6 +32,7 @@ public final class MortisKitPvp extends JavaPlugin {
             heads = (MortisHeads) getServer().getPluginManager().getPlugin("MortisHeads");
         }
         placeholderAPI = getServer().getPluginManager().getPlugin("PlaceholderAPI") != null;
+        worldGuard = getServer().getPluginManager().getPlugin("WorldGuard") != null;
         kitPvpManager = new KitPvpManager();
     }
 
@@ -60,6 +62,10 @@ public final class MortisKitPvp extends JavaPlugin {
 
     public boolean hasPlaceholderAPI() {
         return placeholderAPI;
+    }
+
+    public boolean hasWorldGuard() {
+        return worldGuard;
     }
 
     public KitPvpManager getKitPvpManager() {

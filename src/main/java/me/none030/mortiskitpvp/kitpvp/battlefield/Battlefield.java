@@ -39,17 +39,13 @@ public class Battlefield {
         }
         player.setGameMode(GameMode.SURVIVAL);
         player.getInventory().clear();
-        removePotionEffects(player);
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
+        }
         player.setHealth(20);
         player.setAbsorptionAmount(0);
         player.damage(0.0001);
         player.setFallDistance(0);
-    }
-
-    private void removePotionEffects(Player player) {
-        for (PotionEffect effect : player.getActivePotionEffects()) {
-            player.removePotionEffect(effect.getType());
-        }
     }
 
     public void teleport(Player player) {

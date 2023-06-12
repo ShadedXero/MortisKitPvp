@@ -1,12 +1,18 @@
 package me.none030.mortiskitpvp.kitpvp.arenas;
 
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import me.none030.mortiskitpvp.MortisKitPvp;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -42,6 +48,31 @@ public class Arena {
         unloadWorld();
     }
 
+    private void reset(Player player) {
+        if (plugin.hasHeads()) {
+            plugin.getHeads().getManager().getHeadManager().removeTaskId(player);
+        }
+        player.setGameMode(GameMode.SURVIVAL);
+        player.getInventory().clear();
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
+        }
+        player.setHealth(20);
+        player.setAbsorptionAmount(0);
+        player.damage(0.0001);
+        player.setFallDistance(0);
+    }
+
+    public void resetPlayer(Player player) {
+        player.setGameMode(GameMode.SURVIVAL);
+        reset(player);
+    }
+
+    public void resetSpectator(Player player) {
+        player.setGameMode(GameMode.SPECTATOR);
+        reset(player);
+    }
+
     private void unloadWorld() {
         MVWorldManager worldManager = plugin.getMultiverseAPI().getMVWorldManager();
         worldManager.unloadWorld(worldName, true);
@@ -57,11 +88,19 @@ public class Arena {
     public void delete(World world) {
         MVWorldManager worldManager = plugin.getMultiverseAPI().getMVWorldManager();
         worldManager.deleteWorld(world.getName(), true, true);
+        if (plugin.hasWorldGuard()) {
+            try {
+                new File(WorldGuardPlugin.inst().getDataFolder(), world.getName() + ".yml").delete();
+            } catch (SecurityException exp) {
+                return;
+            }
+        }
     }
 
     public void teleportRed(List<Player> players, World world) {
         List<Location> locations = getRedLocations(world);
         for (Player player : players) {
+            resetPlayer(player);
             if (locations.size() != 0) {
                 Location location = locations.get(0);
                 player.teleport(location);
@@ -75,6 +114,7 @@ public class Arena {
     public void teleportBlue(List<Player> players, World world) {
         List<Location> locations = getBlueLocations(world);
         for (Player player : players) {
+            resetPlayer(player);
             if (locations.size() != 0) {
                 Location location = locations.get(0);
                 player.teleport(location);
@@ -86,14 +126,17 @@ public class Arena {
     }
 
     public void teleportRed(Player player, World world) {
+        resetPlayer(player);
         player.teleport(getRedLocation(world));
     }
 
     public void teleportBlue(Player player, World world) {
+        resetPlayer(player);
         player.teleport(getBlueLocation(world));
     }
 
     public void teleportSpectator(Player player, World world) {
+        resetSpectator(player);
         player.teleport(getSpectateLocation(world));
     }
 

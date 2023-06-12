@@ -1,5 +1,6 @@
 package me.none030.mortiskitpvp.config;
 
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -25,10 +26,24 @@ public class DataConfig extends Config {
             World world = Bukkit.getWorld(worldName);
             if (world == null) {
                 getPlugin().getMultiverseAPI().getMVWorldManager().deleteWorld(worldName, true, true);
+                if (getPlugin().hasWorldGuard()) {
+                    try {
+                        new File(WorldGuardPlugin.inst().getDataFolder(), world.getName() + ".yml").delete();
+                    } catch (SecurityException exp) {
+                        return;
+                    }
+                }
                 remove(worldName);
                 continue;
             }
             getPlugin().getMultiverseAPI().getMVWorldManager().deleteWorld(worldName, true, true);
+            if (getPlugin().hasWorldGuard()) {
+                try {
+                    new File(WorldGuardPlugin.inst().getDataFolder(), world.getName() + ".yml").delete();
+                } catch (SecurityException exp) {
+                    return;
+                }
+            }
             remove(world);
         }
     }

@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class KillStreakListener implements Listener {
 
@@ -34,8 +34,11 @@ public class KillStreakListener implements Listener {
     }
 
     @EventHandler
-    public void onWorldChange(PlayerChangedWorldEvent e) {
+    public void onWorldChange(PlayerTeleportEvent e) {
         Player player = e.getPlayer();
+        if (e.getFrom().getWorld().equals(e.getTo().getWorld())) {
+            return;
+        }
         killStreakManager.resetKills(player);
     }
 
