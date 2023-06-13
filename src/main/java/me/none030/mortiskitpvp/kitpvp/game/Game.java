@@ -10,21 +10,20 @@ import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Game {
 
     private final Arena arena;
     private final World world;
-    private final List<GamePlayer> gamePlayers;
+    private final Set<GamePlayer> gamePlayers;
     private long time;
     private long endTime;
     private TeamType winner;
     private boolean started;
     private boolean ended;
 
-    public Game(KitManager kitManager, Arena arena, List<GamePlayer> gamePlayers) {
+    public Game(KitManager kitManager, Arena arena, Set<GamePlayer> gamePlayers) {
         this.arena = arena;
         this.world = arena.create();
         this.gamePlayers = gamePlayers;
@@ -38,8 +37,8 @@ public class Game {
     }
 
     private void teleport() {
-        arena.teleportRed(getRedPlayers(), world);
-        arena.teleportBlue(getBluePlayers(), world);
+        arena.teleportRed(new ArrayList<>(getRedPlayers()), world);
+        arena.teleportBlue(new ArrayList<>(getBluePlayers()), world);
     }
 
     private void openKitSelector(KitManager kitManager) {
@@ -61,7 +60,7 @@ public class Game {
     }
 
     public void giveKits(KitManager kitManager) {
-        List<GamePlayer> gamePlayers = new ArrayList<>(getAliveRedGamePlayers());
+       Set<GamePlayer> gamePlayers = new HashSet<>(getAliveRedGamePlayers());
         gamePlayers.addAll(getAliveBlueGamePlayers());
         for (GamePlayer gamePlayer : gamePlayers) {
             Player player = gamePlayer.getPlayer();
@@ -85,24 +84,24 @@ public class Game {
         return null;
     }
 
-    public List<Player> getRedPlayers() {
-        List<Player> redPlayers = new ArrayList<>();
+    public Set<Player> getRedPlayers() {
+        Set<Player> redPlayers = new HashSet<>();
         for (GamePlayer gamePlayer : getRedGamePlayers()) {
             redPlayers.add(gamePlayer.getPlayer());
         }
         return redPlayers;
     }
 
-    public List<Player> getBluePlayers() {
-        List<Player> bluePlayers = new ArrayList<>();
+    public Set<Player> getBluePlayers() {
+        Set<Player> bluePlayers = new HashSet<>();
         for (GamePlayer gamePlayer : getBlueGamePlayers()) {
             bluePlayers.add(gamePlayer.getPlayer());
         }
         return bluePlayers;
     }
 
-    public List<GamePlayer> getRedGamePlayers() {
-        List<GamePlayer> redGamePlayers = new ArrayList<>();
+    public Set<GamePlayer> getRedGamePlayers() {
+        Set<GamePlayer> redGamePlayers = new HashSet<>();
         for (GamePlayer gamePlayer : gamePlayers) {
             if (gamePlayer.isTeam(TeamType.RED)) {
                 redGamePlayers.add(gamePlayer);
@@ -111,8 +110,8 @@ public class Game {
         return redGamePlayers;
     }
 
-    public List<GamePlayer> getBlueGamePlayers() {
-        List<GamePlayer> blueGamePlayers = new ArrayList<>();
+    public Set<GamePlayer> getBlueGamePlayers() {
+        Set<GamePlayer> blueGamePlayers = new HashSet<>();
         for (GamePlayer gamePlayer : gamePlayers) {
             if (gamePlayer.isTeam(TeamType.BLUE)) {
                 blueGamePlayers.add(gamePlayer);
@@ -121,12 +120,9 @@ public class Game {
         return blueGamePlayers;
     }
 
-    public List<GamePlayer> getAliveRedGamePlayers() {
-        List<GamePlayer> redGamePlayers = new ArrayList<>();
-        for (GamePlayer gamePlayer : gamePlayers) {
-            if (!gamePlayer.isTeam(TeamType.RED)) {
-                continue;
-            }
+    public Set<GamePlayer> getAliveRedGamePlayers() {
+        Set<GamePlayer> redGamePlayers = new HashSet<>();
+        for (GamePlayer gamePlayer : getRedGamePlayers()) {
             if (gamePlayer.isSpectating()) {
                 continue;
             }
@@ -135,12 +131,9 @@ public class Game {
         return redGamePlayers;
     }
 
-    public List<GamePlayer> getAliveBlueGamePlayers() {
-        List<GamePlayer> blueGamePlayers = new ArrayList<>();
-        for (GamePlayer gamePlayer : gamePlayers) {
-            if (!gamePlayer.isTeam(TeamType.BLUE)) {
-                continue;
-            }
+    public Set<GamePlayer> getAliveBlueGamePlayers() {
+        Set<GamePlayer> blueGamePlayers = new HashSet<>();
+        for (GamePlayer gamePlayer : getBlueGamePlayers()) {
             if (gamePlayer.isSpectating()) {
                 continue;
             }
@@ -152,15 +145,14 @@ public class Game {
     public void checkGamePlayers() {
         for (GamePlayer gamePlayer : gamePlayers) {
             switch (gamePlayer.getTeam()) {
-                case NONE: {
+                case NONE:
                     if (!world.equals(gamePlayer.getPlayer().getWorld())) {
                         arena.teleportSpectator(gamePlayer.getPlayer(), world);
                     }
                     if (!gamePlayer.getPlayer().getGameMode().equals(GameMode.SPECTATOR)) {
                         gamePlayer.getPlayer().setGameMode(GameMode.SPECTATOR);
                     }
-                }
-                case BLUE: {
+                case BLUE:
                     if (gamePlayer.isSpectating()) {
                         if (!world.equals(gamePlayer.getPlayer().getWorld())) {
                             arena.teleportSpectator(gamePlayer.getPlayer(), world);
@@ -176,8 +168,7 @@ public class Game {
                             gamePlayer.getPlayer().setGameMode(GameMode.SURVIVAL);
                         }
                     }
-                }
-                case RED: {
+                case RED:
                     if (gamePlayer.isSpectating()) {
                         if (!world.equals(gamePlayer.getPlayer().getWorld())) {
                             arena.teleportSpectator(gamePlayer.getPlayer(), world);
@@ -193,7 +184,6 @@ public class Game {
                             gamePlayer.getPlayer().setGameMode(GameMode.SURVIVAL);
                         }
                     }
-                }
             }
         }
     }
@@ -210,7 +200,7 @@ public class Game {
 
     public void showResult(GameManager gameManager) {
         switch (winner) {
-            case NONE: {
+            case NONE:
                 List<GamePlayer> gamePlayers = new ArrayList<>(getRedGamePlayers());
                 gamePlayers.addAll(getBlueGamePlayers());
                 for (GamePlayer gamePlayer : gamePlayers) {
@@ -218,8 +208,7 @@ public class Game {
                     Component subTitle = Component.text(gameManager.getMessage("TIE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
                     gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
                 }
-            }
-            case RED: {
+            case RED:
                 for (GamePlayer gamePlayer : getRedGamePlayers()) {
                     Component title = Component.text(gameManager.getMessage("WIN_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
                     Component subTitle = Component.text(gameManager.getMessage("WIN_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
@@ -230,8 +219,7 @@ public class Game {
                     Component subTitle = Component.text(gameManager.getMessage("LOSE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
                     gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
                 }
-            }
-            case BLUE: {
+            case BLUE:
                 for (GamePlayer gamePlayer : getBlueGamePlayers()) {
                     Component title = Component.text(gameManager.getMessage("WIN_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
                     Component subTitle = Component.text(gameManager.getMessage("WIN_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
@@ -242,7 +230,6 @@ public class Game {
                     Component subTitle = Component.text(gameManager.getMessage("LOSE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
                     gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
                 }
-            }
         }
     }
 
@@ -275,24 +262,28 @@ public class Game {
     }
 
     public void end(GameManager gameManager) {
-        for (GamePlayer gamePlayer : gamePlayers) {
+        Iterator<GamePlayer> gamePlayerList = gamePlayers.iterator();
+        while (gamePlayerList.hasNext()) {
+            GamePlayer gamePlayer = gamePlayerList.next();
+            gamePlayerList.remove();
             removePlayer(gameManager, gamePlayer);
         }
         arena.delete(world);
     }
 
     public void removePlayer(GameManager gameManager, GamePlayer gamePlayer) {
-        gamePlayers.remove(gamePlayer);
         gameManager.getGameByPlayer().remove(gamePlayer.getPlayer());
         gameManager.getBattlefieldManager().getBattlefield().teleport(gamePlayer.getPlayer());
     }
 
     public void check(GameManager gameManager) {
-        List<GamePlayer> redGamePlayers = getAliveRedGamePlayers();
-        List<GamePlayer> blueGamePlayers = getAliveBlueGamePlayers();
+        Set<GamePlayer> redGamePlayers = getAliveRedGamePlayers();
+        Set<GamePlayer> blueGamePlayers = getAliveBlueGamePlayers();
         if (redGamePlayers.size() == 0 && blueGamePlayers.size() == 0) {
             setEnded(true);
             setWinner(TeamType.NONE);
+            sendResultMessage(gameManager);
+            showResult(gameManager);
             return;
         }
         if (redGamePlayers.size() == 0) {
@@ -339,7 +330,7 @@ public class Game {
         return world;
     }
 
-    public List<GamePlayer> getGamePlayers() {
+    public Set<GamePlayer> getGamePlayers() {
         return gamePlayers;
     }
 

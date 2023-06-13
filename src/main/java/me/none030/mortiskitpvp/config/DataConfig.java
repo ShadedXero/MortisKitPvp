@@ -23,28 +23,15 @@ public class DataConfig extends Config {
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
         List<String> worlds = new ArrayList<>(config.getStringList("worlds"));
         for (String worldName : worlds) {
-            World world = Bukkit.getWorld(worldName);
-            if (world == null) {
-                getPlugin().getMultiverseAPI().getMVWorldManager().deleteWorld(worldName, true, true);
-                if (getPlugin().hasWorldGuard()) {
-                    try {
-                        new File(WorldGuardPlugin.inst().getDataFolder(), world.getName() + ".yml").delete();
-                    } catch (SecurityException exp) {
-                        return;
-                    }
-                }
-                remove(worldName);
-                continue;
-            }
             getPlugin().getMultiverseAPI().getMVWorldManager().deleteWorld(worldName, true, true);
             if (getPlugin().hasWorldGuard()) {
                 try {
-                    new File(WorldGuardPlugin.inst().getDataFolder(), world.getName() + ".yml").delete();
+                    new File(WorldGuardPlugin.inst().getDataFolder() + "/worlds/", worldName + ".yml").delete();
                 } catch (SecurityException exp) {
-                    return;
+                    continue;
                 }
             }
-            remove(world);
+            remove(worldName);
         }
     }
 

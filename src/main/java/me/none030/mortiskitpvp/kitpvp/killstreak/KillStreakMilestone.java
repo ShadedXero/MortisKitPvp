@@ -5,15 +5,13 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class KillStreakMilestone {
+public class  KillStreakMilestone {
 
-    private final String name;
     private final long requirement;
     private final String message;
     private final List<String> commands;
 
-    public KillStreakMilestone(String name, long requirement, String message, List<String> commands) {
-        this.name = name;
+    public KillStreakMilestone(long requirement, String message, List<String> commands) {
         this.requirement = requirement;
         this.message = message;
         this.commands = commands;
@@ -26,16 +24,8 @@ public class KillStreakMilestone {
         }
     }
 
-    public boolean hasRequirement(long kills) {
-        return this.requirement < kills;
-    }
-
     public boolean isRequirement(long kills) {
         return this.requirement == kills;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public long getRequirement() {

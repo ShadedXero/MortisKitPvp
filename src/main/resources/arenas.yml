@@ -12,6 +12,10 @@ arenas:
     water-instant-kill: true
     durability: false
     hunger: false
+    dropping: false
+    interaction: false
+    breaking: false
+    placing: false
   EXAMPLE_ARENA_2:
     name: "&bExample Arena 2"
     author: "None_123"
@@ -25,3 +29,7 @@ arenas:
     water-instant-kill: false
     durability: true
     hunger: true
+    dropping: false
+    interaction: false
+    breaking: false
+    placing: false

@@ -2,6 +2,7 @@ game:
   length: 1800 # in seconds
   start-time: 5 # in seconds
   end-time: 3 # in seconds
+  force-selector: true
 messages:
   no-permission: "&cYou don't have permission to use this"
   not-in-game: "&cYou must be in a game to use this command"

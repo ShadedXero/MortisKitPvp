@@ -77,7 +77,8 @@ public class BattlefieldConfig extends Config {
         }
         boolean durability = section.getBoolean("durability");
         boolean hunger = section.getBoolean("hunger");
-        Battlefield battlefield = new Battlefield(name, author, world, spawn, origin, end, elytra, durability, hunger);
+        boolean protectedHunger = section.getBoolean("protected-hunger");
+        Battlefield battlefield = new Battlefield(name, author, world, spawn, origin, end, elytra, durability, hunger, protectedHunger);
         getConfigManager().getManager().setBattlefieldManager(new BattlefieldManager(getConfigManager().getManager().getKitManager(), battlefield));
     }
 }

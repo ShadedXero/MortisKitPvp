@@ -2,9 +2,7 @@ package me.none030.mortiskitpvp.config;
 
 import me.none030.mortiskitpvp.kitpvp.arenas.Arena;
 import me.none030.mortiskitpvp.utils.MessageUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -76,7 +74,11 @@ public class ArenaConfig extends Config {
             boolean waterInstantKill = section.getBoolean("water-instant-kill");
             boolean durability = section.getBoolean("durability");
             boolean hunger = section.getBoolean("hunger");
-            Arena arena = new Arena(id, name.getMessage(), author.getMessage(), worldName, redSpawns, blueSpawns, spectate, lavaInstantKill, waterInstantKill, durability, hunger);
+            boolean dropping = section.getBoolean("dropping");
+            boolean interaction = section.getBoolean("interaction");
+            boolean breaking = section.getBoolean("breaking");
+            boolean placing = section.getBoolean("placing");
+            Arena arena = new Arena(id, name.getMessage(), author.getMessage(), worldName, redSpawns, blueSpawns, spectate, lavaInstantKill, waterInstantKill, durability, hunger, dropping, interaction, breaking, placing);
             getConfigManager().getManager().getArenaManager().getArenas().add(arena);
             getConfigManager().getManager().getArenaManager().getArenaById().put(id, arena);
         }

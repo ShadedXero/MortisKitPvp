@@ -8,3 +8,4 @@ battlefield:
   elytra: BATTLEFIELD_ELYTRA
   durability: false
   hunger: false
+  protected-hunger: false

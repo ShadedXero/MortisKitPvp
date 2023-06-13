@@ -9,10 +9,7 @@ import me.none030.mortiskitpvp.kitpvp.duels.invite.Invite;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class GameManager extends Manager {
 
@@ -22,14 +19,16 @@ public class GameManager extends Manager {
     private final long length;
     private final long startTime;
     private final long endTime;
+    private final boolean forceSelector;
     private final List<Game> games;
     private final HashMap<Player, Game> gameByPlayer;
 
-    public GameManager(BattlefieldManager battlefieldManager, long length, long startTime, long endTime) {
+    public GameManager(BattlefieldManager battlefieldManager, long length, long startTime, long endTime, boolean forceSelector) {
         this.battlefieldManager = battlefieldManager;
         this.length = length;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.forceSelector = forceSelector;
         this.games = new ArrayList<>();
         this.gameByPlayer = new HashMap<>();
         check();
@@ -43,9 +42,11 @@ public class GameManager extends Manager {
         new BukkitRunnable() {
             @Override
             public void run() {
-                Iterator<Game> gameList = games.iterator();
-                while (gameList.hasNext()) {
-                    Game game = gameList.next();
+                for (int i = 0; i < games.size(); i++) {
+                    Game game = games.get(i);
+                    if (game == null) {
+                        continue;
+                    }
                     game.checkGamePlayers();
                     game.setTime(game.getTime() + 1);
                     if (!game.isStarted()) {
@@ -60,8 +61,8 @@ public class GameManager extends Manager {
                         game.setEndTime(game.getEndTime() + 1);
                         game.showResult(gameManager);
                         if (game.getEndTime() >= endTime) {
+                            games.remove(game);
                             game.end(gameManager);
-                            gameList.remove();
                         }
                     }else {
                         game.check(gameManager);
@@ -84,7 +85,7 @@ public class GameManager extends Manager {
             }
             gamePlayers.add(gamePlayer);
         }
-        Game game = new Game(battlefieldManager.getKitManager(), arena, gamePlayers);
+        Game game = new Game(battlefieldManager.getKitManager(), arena, new HashSet<>(gamePlayers));
         games.add(game);
         for (Player player : players) {
             gameByPlayer.put(player, game);
@@ -93,7 +94,7 @@ public class GameManager extends Manager {
     }
 
     public void start(Invite invite) {
-        List<GamePlayer> gamePlayers = new ArrayList<>();
+        Set<GamePlayer> gamePlayers = new HashSet<>();
         for (Player redPlayer : invite.getRedPlayers()) {
             GamePlayer gamePlayer = new GamePlayer(redPlayer, TeamType.RED, invite.getRedName());
             gamePlayers.add(gamePlayer);
@@ -131,6 +132,10 @@ public class GameManager extends Manager {
 
     public long getEndTime() {
         return endTime;
+    }
+
+    public boolean isForceSelector() {
+        return forceSelector;
     }
 
     public List<Game> getGames() {

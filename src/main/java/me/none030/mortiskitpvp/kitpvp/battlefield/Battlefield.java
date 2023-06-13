@@ -20,8 +20,9 @@ public class Battlefield {
     private final ItemStack elytra;
     private final boolean durability;
     private final boolean hunger;
+    private final boolean protectedHunger;
 
-    public Battlefield(String name, String author, World world, Location spawnPoint, Location protectedOrigin, Location protectedEnd, ItemStack elytra, boolean durability, boolean hunger) {
+    public Battlefield(String name, String author, World world, Location spawnPoint, Location protectedOrigin, Location protectedEnd, ItemStack elytra, boolean durability, boolean hunger, boolean protectedHunger) {
         this.name = name;
         this.author = author;
         this.world = world;
@@ -31,6 +32,7 @@ public class Battlefield {
         this.elytra = elytra;
         this.durability = durability;
         this.hunger = hunger;
+        this.protectedHunger = protectedHunger;
     }
 
     public void reset(Player player) {
@@ -43,6 +45,7 @@ public class Battlefield {
             player.removePotionEffect(effect.getType());
         }
         player.setHealth(20);
+        player.setFoodLevel(20);
         player.setAbsorptionAmount(0);
         player.damage(0.0001);
         player.setFallDistance(0);
@@ -125,5 +128,9 @@ public class Battlefield {
 
     public boolean isHunger() {
         return hunger;
+    }
+
+    public boolean isProtectedHunger() {
+        return protectedHunger;
     }
 }

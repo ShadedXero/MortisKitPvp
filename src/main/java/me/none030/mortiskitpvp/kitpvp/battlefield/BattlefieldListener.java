@@ -44,10 +44,18 @@ public class BattlefieldListener implements Listener {
     public void onHunger(FoodLevelChangeEvent e) {
         Player player = (Player) e.getEntity();
         Battlefield battlefield = battlefieldManager.getBattlefield();
-        if (!battlefield.isWorld(player.getWorld()) || battlefield.isHunger()) {
+        if (!battlefield.isWorld(player.getWorld())) {
             return;
         }
-        e.setCancelled(true);
+        if (battlefield.isProtected(player.getLocation())) {
+            if (!battlefield.isProtectedHunger()) {
+                e.setCancelled(true);
+            }
+        }else {
+            if (!battlefield.isHunger()) {
+                e.setCancelled(true);
+            }
+        }
     }
 
     @EventHandler

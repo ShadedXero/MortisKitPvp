@@ -1,11 +1,15 @@
 package me.none030.mortiskitpvp.kitpvp.game;
 
+import me.none030.mortiskitpvp.kitpvp.kits.KitMenu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 
 public class GameListener implements Listener {
@@ -14,6 +18,60 @@ public class GameListener implements Listener {
 
     public GameListener(GameManager gameManager) {
         this.gameManager = gameManager;
+    }
+
+    @EventHandler
+    public void onDrop(PlayerDropItemEvent e) {
+        Player player = e.getPlayer();
+        Game game = gameManager.getGameByPlayer().get(player);
+        if (game == null || game.getArena().isDropping()) {
+            return;
+        }
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent e) {
+        Player player = e.getPlayer();
+        Game game = gameManager.getGameByPlayer().get(player);
+        if (game == null || game.getArena().isInteraction()) {
+            return;
+        }
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onBreak(BlockBreakEvent e) {
+        Player player = e.getPlayer();
+        Game game = gameManager.getGameByPlayer().get(player);
+        if (game == null || game.getArena().isBreaking()) {
+            return;
+        }
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onPlace(BlockPlaceEvent e) {
+        Player player = e.getPlayer();
+        Game game = gameManager.getGameByPlayer().get(player);
+        if (game == null || game.getArena().isPlacing()) {
+            return;
+        }
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onClose(InventoryCloseEvent e) {
+        Player player = (Player) e.getPlayer();
+        Game game = gameManager.getGameByPlayer().get(player);
+        if (game == null || !gameManager.isForceSelector()) {
+            return;
+        }
+        if (!e.getReason().equals(InventoryCloseEvent.Reason.PLAYER) || !(e.getInventory().getHolder() instanceof KitMenu)) {
+            return;
+        }
+        KitMenu menu = new KitMenu(gameManager.getBattlefieldManager().getKitManager(), player);
+        menu.open(player);
     }
 
     @EventHandler
@@ -108,7 +166,6 @@ public class GameListener implements Listener {
            return;
         }
         gamePlayer.setSpectating(game.getArena(), game.getWorld(), true);
-        game.check(gameManager);
     }
 
     @EventHandler
@@ -123,6 +180,5 @@ public class GameListener implements Listener {
             return;
         }
         game.removePlayer(gameManager, gamePlayer);
-        game.check(gameManager);
     }
 }

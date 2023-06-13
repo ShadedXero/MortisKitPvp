@@ -7,6 +7,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class CombatListener implements Listener {
 
@@ -53,7 +54,7 @@ public class CombatListener implements Listener {
     }
 
     @EventHandler
-    public void onWorldChange(PlayerChangedWorldEvent e) {
+    public void onTeleport(PlayerTeleportEvent e) {
         Player player = e.getPlayer();
         combatManager.removeCombat(player);
         Player damager = combatManager.getDamagerByPlayer().get(player);

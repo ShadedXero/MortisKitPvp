@@ -1,7 +1,6 @@
 package me.none030.mortiskitpvp.kitpvp.arenas;
 
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
-import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import me.none030.mortiskitpvp.MortisKitPvp;
 import org.bukkit.Bukkit;
@@ -12,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -32,8 +30,12 @@ public class Arena {
     private final boolean waterInstantKill;
     private final boolean durability;
     private final boolean hunger;
+    private final boolean dropping;
+    private final boolean interaction;
+    private final boolean breaking;
+    private final boolean placing;
 
-    public Arena(String id, String name, String author, String worldName, List<Location> redSpawns, List<Location> blueSpawns, Location spectate, boolean lavaInstantKill, boolean waterInstantKill, boolean durability, boolean hunger) {
+    public Arena(String id, String name, String author, String worldName, List<Location> redSpawns, List<Location> blueSpawns, Location spectate, boolean lavaInstantKill, boolean waterInstantKill, boolean durability, boolean hunger, boolean dropping, boolean interaction, boolean breaking, boolean placing) {
         this.id = id;
         this.name = name;
         this.author = author;
@@ -45,6 +47,10 @@ public class Arena {
         this.waterInstantKill = waterInstantKill;
         this.durability = durability;
         this.hunger = hunger;
+        this.dropping = dropping;
+        this.interaction = interaction;
+        this.breaking = breaking;
+        this.placing = placing;
         unloadWorld();
     }
 
@@ -58,6 +64,7 @@ public class Arena {
             player.removePotionEffect(effect.getType());
         }
         player.setHealth(20);
+        player.setFoodLevel(20);
         player.setAbsorptionAmount(0);
         player.damage(0.0001);
         player.setFallDistance(0);
@@ -90,9 +97,8 @@ public class Arena {
         worldManager.deleteWorld(world.getName(), true, true);
         if (plugin.hasWorldGuard()) {
             try {
-                new File(WorldGuardPlugin.inst().getDataFolder(), world.getName() + ".yml").delete();
-            } catch (SecurityException exp) {
-                return;
+                new File(WorldGuardPlugin.inst().getDataFolder() + "/worlds/", world.getName() + ".yml").delete();
+            }catch (SecurityException ignored) {
             }
         }
     }
@@ -222,5 +228,21 @@ public class Arena {
 
     public boolean isHunger() {
         return hunger;
+    }
+
+    public boolean isDropping() {
+        return dropping;
+    }
+
+    public boolean isInteraction() {
+        return interaction;
+    }
+
+    public boolean isBreaking() {
+        return breaking;
+    }
+
+    public boolean isPlacing() {
+        return placing;
     }
 }

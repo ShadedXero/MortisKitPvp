@@ -1,13 +1,16 @@
+interval-milestone:
+  requirement: 5
+  message: "&a%player_name% is on a kill streak"
+  commands:
+    - "give %player_name% golden_apple"
 milestones:
   EXAMPLE_MILESTONE:
-    name: "&aExample Milestone"
     requirement: 3
-    message: "%player_name% is on a kill streak"
+    message: "&a%player_name% is on a kill streak"
     commands:
       - "give %player_name% golden_apple"
   EXAMPLE_MILESTONE_2:
-    name: "&bExample Milestone 2"
-    requirement: 5
-    message: "%player_name% is on a kill streak"
+    requirement: 7
+    message: "&a%player_name% is on a kill streak"
     commands:
       - "give %player_name% golden_apple 3"

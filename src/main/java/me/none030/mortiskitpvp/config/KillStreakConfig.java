@@ -20,8 +20,25 @@ public class KillStreakConfig extends Config {
     public void loadConfig() {
         File file = saveConfig();
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-        getConfigManager().getManager().setKillStreakManager(new KillStreakManager(getConfigManager().getManager().getGameManager()));
+        KillStreakMilestone intervalMilestone = loadIntervalMilestone(config.getConfigurationSection("interval-milestone"));
+        getConfigManager().getManager().setKillStreakManager(new KillStreakManager(getConfigManager().getManager().getGameManager(), intervalMilestone));
         loadMilestones(config.getConfigurationSection("milestones"));
+    }
+
+    private KillStreakMilestone loadIntervalMilestone(ConfigurationSection section) {
+        if (section == null) {
+            return null;
+        }
+        int requirement = section.getInt("requirement");
+        String rawMessage = section.getString("message");
+        String message;
+        if (rawMessage != null) {
+            message = new MessageUtils(rawMessage).color();
+        }else {
+            message = null;
+        }
+        List<String> commands = section.getStringList("commands");
+        return new KillStreakMilestone(requirement, message, commands);
     }
 
     private void loadMilestones(ConfigurationSection milestones) {
@@ -33,11 +50,16 @@ public class KillStreakConfig extends Config {
             if (section == null) {
                 continue;
             }
-            MessageUtils name = new MessageUtils(section.getString("name"));
             int requirement = section.getInt("requirement");
-            MessageUtils message = new MessageUtils(section.getString("message"));
+            String rawMessage = section.getString("message");
+            String message;
+            if (rawMessage != null) {
+                message = new MessageUtils(rawMessage).color();
+            }else {
+                message = null;
+            }
             List<String> commands = section.getStringList("commands");
-            KillStreakMilestone milestone = new KillStreakMilestone(name.getMessage(), requirement, message.getMessage(), commands);
+            KillStreakMilestone milestone = new KillStreakMilestone(requirement, message, commands);
             getConfigManager().getManager().getKillStreakManager().getMilestones().add(milestone);
         }
     }

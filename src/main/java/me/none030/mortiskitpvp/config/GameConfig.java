@@ -28,6 +28,7 @@ public class GameConfig extends Config {
         long length = game.getLong("length");
         long startTime = game.getLong("start-time");
         long endTime = game.getLong("end-time");
-        getConfigManager().getManager().setGameManager(new GameManager(getConfigManager().getManager().getBattlefieldManager(), length, startTime, endTime));
+        boolean forceSelector = game.getBoolean("force-selector");
+        getConfigManager().getManager().setGameManager(new GameManager(getConfigManager().getManager().getBattlefieldManager(), length, startTime, endTime, forceSelector));
     }
 }
