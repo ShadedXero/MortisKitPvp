@@ -3,11 +3,13 @@ package me.none030.mortiskitpvp.kitpvp.arenas;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import me.none030.mortiskitpvp.MortisKitPvp;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -106,8 +108,8 @@ public class Arena {
         worldManager.deleteWorld(world.getName(), true, true);
         if (plugin.hasWorldGuard()) {
             try {
-                new File(WorldGuardPlugin.inst().getDataFolder() + "/worlds/", world.getName()).delete();
-            }catch (SecurityException ignored) {
+                FileUtils.forceDelete(new File(WorldGuardPlugin.inst().getDataFolder() + "/worlds/", world.getName()));
+            }catch (IOException ignored) {
             }
         }
     }
