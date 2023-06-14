@@ -1,5 +1,6 @@
 package me.none030.mortiskitpvp.kitpvp.game;
 
+import me.none030.mortiskitpvp.MortisKitPvp;
 import me.none030.mortiskitpvp.kitpvp.kits.KitMenu;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -13,9 +14,11 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class GameListener implements Listener {
 
+    private final MortisKitPvp plugin = MortisKitPvp.getInstance();
     private final GameManager gameManager;
 
     public GameListener(GameManager gameManager) {
@@ -100,7 +103,12 @@ public class GameListener implements Listener {
             return;
         }
         KitMenu menu = (KitMenu) e.getInventory().getHolder();
-        menu.open(player);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                menu.open(player);
+            }
+        }.runTask(plugin);
     }
 
     @EventHandler
