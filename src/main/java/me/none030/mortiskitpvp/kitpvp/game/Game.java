@@ -262,16 +262,14 @@ public class Game {
     }
 
     public void end(GameManager gameManager) {
-        Iterator<GamePlayer> gamePlayerList = gamePlayers.iterator();
-        while (gamePlayerList.hasNext()) {
-            GamePlayer gamePlayer = gamePlayerList.next();
-            gamePlayerList.remove();
+        for (GamePlayer gamePlayer : gamePlayers) {
             removePlayer(gameManager, gamePlayer);
         }
         arena.delete(world);
     }
 
     public void removePlayer(GameManager gameManager, GamePlayer gamePlayer) {
+        gamePlayers.remove(gamePlayer);
         gameManager.getGameByPlayer().remove(gamePlayer.getPlayer());
         gameManager.getBattlefieldManager().getBattlefield().teleport(gamePlayer.getPlayer());
     }

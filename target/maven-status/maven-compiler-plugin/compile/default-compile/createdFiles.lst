@@ -35,6 +35,7 @@ me\none030\mortiskitpvp\kitpvp\killstreak\KillStreakMilestone.class
 me\none030\mortiskitpvp\kitpvp\battlefield\BattlefieldManager$1.class
 me\none030\mortiskitpvp\armorequipevent\DispenserArmorListener.class
 me\none030\mortiskitpvp\kitpvp\killstreak\KillStreakManager.class
+me\none030\mortiskitpvp\kitpvp\game\GameListener$1.class
 me\none030\mortiskitpvp\kitpvp\kits\KitSettings.class
 me\none030\mortiskitpvp\kitpvp\matchmakings\MatchMakingListener.class
 me\none030\mortiskitpvp\kitpvp\combat\Combat.class
