@@ -60,7 +60,7 @@ public class Game {
     }
 
     public void giveKits(KitManager kitManager) {
-       Set<GamePlayer> gamePlayers = new HashSet<>(getAliveRedGamePlayers());
+       List<GamePlayer> gamePlayers = new ArrayList<>(getAliveRedGamePlayers());
         gamePlayers.addAll(getAliveBlueGamePlayers());
         for (GamePlayer gamePlayer : gamePlayers) {
             Player player = gamePlayer.getPlayer();
@@ -84,24 +84,24 @@ public class Game {
         return null;
     }
 
-    public Set<Player> getRedPlayers() {
-        Set<Player> redPlayers = new HashSet<>();
+    public List<Player> getRedPlayers() {
+        List<Player> redPlayers = new ArrayList<>();
         for (GamePlayer gamePlayer : getRedGamePlayers()) {
             redPlayers.add(gamePlayer.getPlayer());
         }
         return redPlayers;
     }
 
-    public Set<Player> getBluePlayers() {
-        Set<Player> bluePlayers = new HashSet<>();
+    public List<Player> getBluePlayers() {
+        List<Player> bluePlayers = new ArrayList<>();
         for (GamePlayer gamePlayer : getBlueGamePlayers()) {
             bluePlayers.add(gamePlayer.getPlayer());
         }
         return bluePlayers;
     }
 
-    public Set<GamePlayer> getRedGamePlayers() {
-        Set<GamePlayer> redGamePlayers = new HashSet<>();
+    public List<GamePlayer> getRedGamePlayers() {
+        List<GamePlayer> redGamePlayers = new ArrayList<>();
         for (GamePlayer gamePlayer : gamePlayers) {
             if (gamePlayer.isTeam(TeamType.RED)) {
                 redGamePlayers.add(gamePlayer);
@@ -110,8 +110,8 @@ public class Game {
         return redGamePlayers;
     }
 
-    public Set<GamePlayer> getBlueGamePlayers() {
-        Set<GamePlayer> blueGamePlayers = new HashSet<>();
+    public List<GamePlayer> getBlueGamePlayers() {
+        List<GamePlayer> blueGamePlayers = new ArrayList<>();
         for (GamePlayer gamePlayer : gamePlayers) {
             if (gamePlayer.isTeam(TeamType.BLUE)) {
                 blueGamePlayers.add(gamePlayer);
@@ -120,8 +120,8 @@ public class Game {
         return blueGamePlayers;
     }
 
-    public Set<GamePlayer> getAliveRedGamePlayers() {
-        Set<GamePlayer> redGamePlayers = new HashSet<>();
+    public List<GamePlayer> getAliveRedGamePlayers() {
+        List<GamePlayer> redGamePlayers = new ArrayList<>();
         for (GamePlayer gamePlayer : getRedGamePlayers()) {
             if (gamePlayer.isSpectating()) {
                 continue;
@@ -131,8 +131,8 @@ public class Game {
         return redGamePlayers;
     }
 
-    public Set<GamePlayer> getAliveBlueGamePlayers() {
-        Set<GamePlayer> blueGamePlayers = new HashSet<>();
+    public List<GamePlayer> getAliveBlueGamePlayers() {
+        List<GamePlayer> blueGamePlayers = new ArrayList<>();
         for (GamePlayer gamePlayer : getBlueGamePlayers()) {
             if (gamePlayer.isSpectating()) {
                 continue;
@@ -144,46 +144,48 @@ public class Game {
 
     public void checkGamePlayers() {
         for (GamePlayer gamePlayer : gamePlayers) {
-            switch (gamePlayer.getTeam()) {
-                case NONE:
+            TeamType team = gamePlayer.getTeam();
+            if (team.equals(TeamType.NONE)) {
+                if (!world.equals(gamePlayer.getPlayer().getWorld())) {
+                    arena.teleportSpectator(gamePlayer.getPlayer(), world);
+                }
+                if (!gamePlayer.getPlayer().getGameMode().equals(GameMode.SPECTATOR)) {
+                    gamePlayer.getPlayer().setGameMode(GameMode.SPECTATOR);
+                }
+            }
+            if (team.equals(TeamType.BLUE)) {
+                if (gamePlayer.isSpectating()) {
                     if (!world.equals(gamePlayer.getPlayer().getWorld())) {
                         arena.teleportSpectator(gamePlayer.getPlayer(), world);
                     }
                     if (!gamePlayer.getPlayer().getGameMode().equals(GameMode.SPECTATOR)) {
                         gamePlayer.getPlayer().setGameMode(GameMode.SPECTATOR);
                     }
-                case BLUE:
-                    if (gamePlayer.isSpectating()) {
-                        if (!world.equals(gamePlayer.getPlayer().getWorld())) {
-                            arena.teleportSpectator(gamePlayer.getPlayer(), world);
-                        }
-                        if (!gamePlayer.getPlayer().getGameMode().equals(GameMode.SPECTATOR)) {
-                            gamePlayer.getPlayer().setGameMode(GameMode.SPECTATOR);
-                        }
-                    }else {
-                        if (!world.equals(gamePlayer.getPlayer().getWorld())) {
-                            arena.teleportBlue(gamePlayer.getPlayer(), world);
-                        }
-                        if (!gamePlayer.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) {
-                            gamePlayer.getPlayer().setGameMode(GameMode.SURVIVAL);
-                        }
+                }else {
+                    if (!world.equals(gamePlayer.getPlayer().getWorld())) {
+                        arena.teleportBlue(gamePlayer.getPlayer(), world);
                     }
-                case RED:
-                    if (gamePlayer.isSpectating()) {
-                        if (!world.equals(gamePlayer.getPlayer().getWorld())) {
-                            arena.teleportSpectator(gamePlayer.getPlayer(), world);
-                        }
-                        if (!gamePlayer.getPlayer().getGameMode().equals(GameMode.SPECTATOR)) {
-                            gamePlayer.getPlayer().setGameMode(GameMode.SPECTATOR);
-                        }
-                    }else {
-                        if (!world.equals(gamePlayer.getPlayer().getWorld())) {
-                            arena.teleportRed(gamePlayer.getPlayer(), world);
-                        }
-                        if (!gamePlayer.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) {
-                            gamePlayer.getPlayer().setGameMode(GameMode.SURVIVAL);
-                        }
+                    if (!gamePlayer.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) {
+                        gamePlayer.getPlayer().setGameMode(GameMode.SURVIVAL);
                     }
+                }
+            }
+            if (team.equals(TeamType.RED)) {
+                if (gamePlayer.isSpectating()) {
+                    if (!world.equals(gamePlayer.getPlayer().getWorld())) {
+                        arena.teleportSpectator(gamePlayer.getPlayer(), world);
+                    }
+                    if (!gamePlayer.getPlayer().getGameMode().equals(GameMode.SPECTATOR)) {
+                        gamePlayer.getPlayer().setGameMode(GameMode.SPECTATOR);
+                    }
+                }else {
+                    if (!world.equals(gamePlayer.getPlayer().getWorld())) {
+                        arena.teleportRed(gamePlayer.getPlayer(), world);
+                    }
+                    if (!gamePlayer.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) {
+                        gamePlayer.getPlayer().setGameMode(GameMode.SURVIVAL);
+                    }
+                }
             }
         }
     }
@@ -199,75 +201,135 @@ public class Game {
     }
 
     public void showResult(GameManager gameManager) {
-        switch (winner) {
-            case NONE:
-                List<GamePlayer> gamePlayers = new ArrayList<>(getRedGamePlayers());
-                gamePlayers.addAll(getBlueGamePlayers());
-                for (GamePlayer gamePlayer : gamePlayers) {
-                    Component title = Component.text(gameManager.getMessage("TIE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                    Component subTitle = Component.text(gameManager.getMessage("TIE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                    gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+        if (winner.equals(TeamType.NONE)) {
+            List<GamePlayer> gamePlayers = new ArrayList<>(getRedGamePlayers());
+            gamePlayers.addAll(getBlueGamePlayers());
+            Iterator<GamePlayer> gamePlayerList = gamePlayers.iterator();
+            while (gamePlayerList.hasNext()) {
+                GamePlayer gamePlayer = gamePlayerList.next();
+                if (gamePlayer == null) {
+                    continue;
                 }
-            case RED:
-                for (GamePlayer gamePlayer : getRedGamePlayers()) {
-                    Component title = Component.text(gameManager.getMessage("WIN_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                    Component subTitle = Component.text(gameManager.getMessage("WIN_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                    gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+                gamePlayerList.remove();
+                Component title = Component.text(gameManager.getMessage("TIE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                Component subTitle = Component.text(gameManager.getMessage("TIE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+            }
+        }
+        if (winner.equals(TeamType.RED)) {
+            Iterator<GamePlayer> redGamePlayers = getRedGamePlayers().iterator();
+            while (redGamePlayers.hasNext()) {
+                GamePlayer gamePlayer = redGamePlayers.next();
+                if (gamePlayer == null) {
+                    continue;
                 }
-                for (GamePlayer gamePlayer : getBlueGamePlayers()) {
-                    Component title = Component.text(gameManager.getMessage("LOSE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                    Component subTitle = Component.text(gameManager.getMessage("LOSE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                    gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+                redGamePlayers.remove();
+                Component title = Component.text(gameManager.getMessage("WIN_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                Component subTitle = Component.text(gameManager.getMessage("WIN_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+            }
+            Iterator<GamePlayer> blueGamePlayers = getBlueGamePlayers().iterator();
+            while (blueGamePlayers.hasNext()) {
+                GamePlayer gamePlayer = blueGamePlayers.next();
+                if (gamePlayer == null) {
+                    continue;
                 }
-            case BLUE:
-                for (GamePlayer gamePlayer : getBlueGamePlayers()) {
-                    Component title = Component.text(gameManager.getMessage("WIN_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                    Component subTitle = Component.text(gameManager.getMessage("WIN_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                    gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+                blueGamePlayers.remove();
+                Component title = Component.text(gameManager.getMessage("LOSE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                Component subTitle = Component.text(gameManager.getMessage("LOSE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+            }
+        }
+        if (winner.equals(TeamType.BLUE)) {
+            Iterator<GamePlayer> blueGamePlayers = getBlueGamePlayers().iterator();
+            while (blueGamePlayers.hasNext()) {
+                GamePlayer gamePlayer = blueGamePlayers.next();
+                if (gamePlayer == null) {
+                    continue;
                 }
-                for (GamePlayer gamePlayer : getRedGamePlayers()) {
-                    Component title = Component.text(gameManager.getMessage("LOSE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                    Component subTitle = Component.text(gameManager.getMessage("LOSE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
-                    gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+                blueGamePlayers.remove();
+                Component title = Component.text(gameManager.getMessage("WIN_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                Component subTitle = Component.text(gameManager.getMessage("WIN_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+            }
+            Iterator<GamePlayer> redGamePlayers = getRedGamePlayers().iterator();
+            while (redGamePlayers.hasNext()) {
+                GamePlayer gamePlayer = redGamePlayers.next();
+                if (gamePlayer == null) {
+                    continue;
                 }
+                redGamePlayers.remove();
+                Component title = Component.text(gameManager.getMessage("LOSE_TITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                Component subTitle = Component.text(gameManager.getMessage("LOSE_SUBTITLE").replace("%team_name%", gamePlayer.getTeamName()));
+                gamePlayer.getPlayer().showTitle(Title.title(title, subTitle));
+            }
         }
     }
 
     public void sendResultMessage(GameManager gameManager) {
-        switch (winner) {
-            case NONE: {
-                List<GamePlayer> gamePlayers = new ArrayList<>(getRedGamePlayers());
-                gamePlayers.addAll(getBlueGamePlayers());
-                for (GamePlayer gamePlayer : gamePlayers) {
-                    gamePlayer.getPlayer().sendMessage(gameManager.getMessage("TIE").replace("%team_name%", gamePlayer.getTeamName()));
+        if (winner.equals(TeamType.NONE)) {
+            List<GamePlayer> gamePlayers = new ArrayList<>(getRedGamePlayers());
+            gamePlayers.addAll(getBlueGamePlayers());
+            Iterator<GamePlayer> gamePlayerList = gamePlayers.iterator();
+            while (gamePlayerList.hasNext()) {
+                GamePlayer gamePlayer = gamePlayerList.next();
+                if (gamePlayer == null) {
+                    continue;
                 }
+                gamePlayerList.remove();
+                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("TIE").replace("%team_name%", gamePlayer.getTeamName()));
             }
-            case RED: {
-                for (GamePlayer gamePlayer : getRedGamePlayers()) {
-                    gamePlayer.getPlayer().sendMessage(gameManager.getMessage("WIN").replace("%team_name%", gamePlayer.getTeamName()));
+        }
+        if (winner.equals(TeamType.RED)) {
+            Iterator<GamePlayer> redGamePlayers = getRedGamePlayers().iterator();
+            while (redGamePlayers.hasNext()) {
+                GamePlayer gamePlayer = redGamePlayers.next();
+                if (gamePlayer == null) {
+                    continue;
                 }
-                for (GamePlayer gamePlayer : getBlueGamePlayers()) {
-                    gamePlayer.getPlayer().sendMessage(gameManager.getMessage("LOSE").replace("%team_name%", gamePlayer.getTeamName()));
-                }
+                redGamePlayers.remove();
+                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("WIN").replace("%team_name%", gamePlayer.getTeamName()));
             }
-            case BLUE: {
-                for (GamePlayer gamePlayer : getBlueGamePlayers()) {
-                    gamePlayer.getPlayer().sendMessage(gameManager.getMessage("WIN").replace("%team_name%", gamePlayer.getTeamName()));
+            Iterator<GamePlayer> blueGamePlayers = getBlueGamePlayers().iterator();
+            while (blueGamePlayers.hasNext()) {
+                GamePlayer gamePlayer = blueGamePlayers.next();
+                if (gamePlayer == null) {
+                    continue;
                 }
-                for (GamePlayer gamePlayer : getRedGamePlayers()) {
-                    gamePlayer.getPlayer().sendMessage(gameManager.getMessage("LOSE").replace("%team_name%", gamePlayer.getTeamName()));
+                blueGamePlayers.remove();
+                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("LOSE").replace("%team_name%", gamePlayer.getTeamName()));
+            }
+        }
+        if (winner.equals(TeamType.BLUE)) {
+            Iterator<GamePlayer> blueGamePlayers = getBlueGamePlayers().iterator();
+            while (blueGamePlayers.hasNext()) {
+                GamePlayer gamePlayer = blueGamePlayers.next();
+                if (gamePlayer == null) {
+                    continue;
                 }
+                blueGamePlayers.remove();
+                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("WIN").replace("%team_name%", gamePlayer.getTeamName()));
+            }
+            Iterator<GamePlayer> redGamePlayers = getRedGamePlayers().iterator();
+            while (redGamePlayers.hasNext()) {
+                GamePlayer gamePlayer = redGamePlayers.next();
+                if (gamePlayer == null) {
+                    continue;
+                }
+                redGamePlayers.remove();
+                gamePlayer.getPlayer().sendMessage(gameManager.getMessage("LOSE").replace("%team_name%", gamePlayer.getTeamName()));
             }
         }
     }
 
     public void end(GameManager gameManager) {
-        for (int i = 0; i < gamePlayers.size(); i++) {
-            GamePlayer gamePlayer = gamePlayers.get(i);
+        Iterator<GamePlayer> gamePlayerList = gamePlayers.iterator();
+        while (gamePlayerList.hasNext()) {
+            GamePlayer gamePlayer = gamePlayerList.next();
             if (gamePlayer == null) {
                 continue;
             }
-            gamePlayers.remove(gamePlayer);
+            gamePlayerList.remove();
             gameManager.getGameByPlayer().remove(gamePlayer.getPlayer());
             gameManager.getBattlefieldManager().getBattlefield().teleport(gamePlayer.getPlayer());
         }
@@ -281,8 +343,8 @@ public class Game {
     }
 
     public void check(GameManager gameManager) {
-        Set<GamePlayer> redGamePlayers = getAliveRedGamePlayers();
-        Set<GamePlayer> blueGamePlayers = getAliveBlueGamePlayers();
+        List<GamePlayer> redGamePlayers = getAliveRedGamePlayers();
+        List<GamePlayer> blueGamePlayers = getAliveBlueGamePlayers();
         if (redGamePlayers.size() == 0 && blueGamePlayers.size() == 0) {
             setEnded(true);
             setWinner(TeamType.NONE);

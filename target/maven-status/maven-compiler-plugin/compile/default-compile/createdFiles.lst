@@ -3,7 +3,6 @@ me\none030\mortiskitpvp\armorequipevent\ArmorEquipEvent$EquipMethod.class
 me\none030\mortiskitpvp\config\KillStreakConfig.class
 me\none030\mortiskitpvp\kitpvp\battlefield\Battlefield.class
 me\none030\mortiskitpvp\kitpvp\duels\DuelCommand.class
-me\none030\mortiskitpvp\kitpvp\game\Game$1.class
 me\none030\mortiskitpvp\kitpvp\game\LeaveCommand.class
 me\none030\mortiskitpvp\utils\MessageUtils.class
 me\none030\mortiskitpvp\kitpvp\killstreak\KillStreakListener.class
