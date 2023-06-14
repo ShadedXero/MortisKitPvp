@@ -13,9 +13,14 @@ arenas:
     durability: false
     hunger: false
     dropping: false
-    interaction: false
+    picking: false
     breaking: false
     placing: false
+    redstone: false
+    doors: true
+    chest: false
+    game-rules: #https://helpch.at/docs/1.16.2/org/bukkit/GameRule.html
+      - DO_IMMEDIATE_RESPAWN:true
   EXAMPLE_ARENA_2:
     name: "&bExample Arena 2"
     author: "None_123"
@@ -30,6 +35,11 @@ arenas:
     durability: true
     hunger: true
     dropping: false
-    interaction: false
+    picking: false
     breaking: false
     placing: false
+    redstone: false
+    doors: true
+    chest: false
+    game-rules: #https://helpch.at/docs/1.16.2/org/bukkit/GameRule.html
+      - DO_IMMEDIATE_RESPAWN:true

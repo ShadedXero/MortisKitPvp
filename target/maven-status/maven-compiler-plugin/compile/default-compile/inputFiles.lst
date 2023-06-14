@@ -32,6 +32,7 @@ F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\kitpvp\game\G
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\kitpvp\game\TeamType.java
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\kitpvp\duels\invite\Invite.java
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\config\ArenaConfig.java
+F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\kitpvp\arenas\ArenaGameRule.java
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\kitpvp\combat\CombatManager.java
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\config\BattlefieldConfig.java
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\utils\MessageUtils.java
@@ -44,6 +45,7 @@ F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\kitpvp\kits\K
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\MortisKitPvp.java
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\config\DuelConfig.java
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\kitpvp\battlefield\Battlefield.java
+F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\kitpvp\arenas\BooleanGameRule.java
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\kitpvp\kits\Kit.java
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\kitpvp\matchmakings\MatchMakingSettings.java
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\placeholderapi\PlaceholderAddon.java
@@ -52,6 +54,7 @@ F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\items\ItemMan
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\kitpvp\game\Game.java
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\kitpvp\game\GameListener.java
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\config\ItemConfig.java
+F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\kitpvp\arenas\IntegerGameRule.java
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\kitpvp\duels\invite\DuelInvite.java
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\kitpvp\kits\KitMenu.java
 F:\Java\Plugins\MortisKitPvp\src\main\java\me\none030\mortiskitpvp\kitpvp\duels\DuelListener.java

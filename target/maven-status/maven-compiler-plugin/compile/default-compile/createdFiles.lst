@@ -1,3 +1,4 @@
+me\none030\mortiskitpvp\kitpvp\arenas\BooleanGameRule.class
 me\none030\mortiskitpvp\armorequipevent\ArmorEquipEvent$EquipMethod.class
 me\none030\mortiskitpvp\config\KillStreakConfig.class
 me\none030\mortiskitpvp\kitpvp\battlefield\Battlefield.class
@@ -14,6 +15,7 @@ me\none030\mortiskitpvp\config\GameConfig.class
 me\none030\mortiskitpvp\utils\ItemBuilder.class
 me\none030\mortiskitpvp\kitpvp\arenas\Arena.class
 me\none030\mortiskitpvp\config\ConfigManager.class
+me\none030\mortiskitpvp\kitpvp\arenas\IntegerGameRule.class
 me\none030\mortiskitpvp\kitpvp\KitPvpCommand.class
 me\none030\mortiskitpvp\kitpvp\game\GamePlayer.class
 me\none030\mortiskitpvp\kitpvp\arenas\ArenaManager.class
@@ -44,6 +46,7 @@ me\none030\mortiskitpvp\kitpvp\battlefield\BattlefieldListener.class
 me\none030\mortiskitpvp\kitpvp\duels\DuelManager.class
 me\none030\mortiskitpvp\placeholderapi\PlaceholderManager.class
 me\none030\mortiskitpvp\kitpvp\combat\CombatManager$1.class
+me\none030\mortiskitpvp\kitpvp\arenas\ArenaGameRule.class
 me\none030\mortiskitpvp\armorequipevent\ArmorEquipEvent.class
 me\none030\mortiskitpvp\kitpvp\game\GameManager.class
 me\none030\mortiskitpvp\armorequipevent\ArmorListener.class
