@@ -85,7 +85,7 @@ public class GameManager extends Manager {
             }
             gamePlayers.add(gamePlayer);
         }
-        Game game = new Game(battlefieldManager.getKitManager(), arena, new HashSet<>(gamePlayers));
+        Game game = new Game(battlefieldManager.getKitManager(), arena, gamePlayers);
         games.add(game);
         for (Player player : players) {
             gameByPlayer.put(player, game);
@@ -94,7 +94,7 @@ public class GameManager extends Manager {
     }
 
     public void start(Invite invite) {
-        Set<GamePlayer> gamePlayers = new HashSet<>();
+        List<GamePlayer> gamePlayers = new ArrayList<>();
         for (Player redPlayer : invite.getRedPlayers()) {
             GamePlayer gamePlayer = new GamePlayer(redPlayer, TeamType.RED, invite.getRedName());
             gamePlayers.add(gamePlayer);

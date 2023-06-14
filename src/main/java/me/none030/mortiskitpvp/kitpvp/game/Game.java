@@ -16,14 +16,14 @@ public class Game {
 
     private final Arena arena;
     private final World world;
-    private final Set<GamePlayer> gamePlayers;
+    private final List<GamePlayer> gamePlayers;
     private long time;
     private long endTime;
     private TeamType winner;
     private boolean started;
     private boolean ended;
 
-    public Game(KitManager kitManager, Arena arena, Set<GamePlayer> gamePlayers) {
+    public Game(KitManager kitManager, Arena arena, List<GamePlayer> gamePlayers) {
         this.arena = arena;
         this.world = arena.create();
         this.gamePlayers = gamePlayers;
@@ -262,8 +262,14 @@ public class Game {
     }
 
     public void end(GameManager gameManager) {
-        for (GamePlayer gamePlayer : gamePlayers) {
-            removePlayer(gameManager, gamePlayer);
+        for (int i = 0; i < gamePlayers.size(); i++) {
+            GamePlayer gamePlayer = gamePlayers.get(i);
+            if (gamePlayer == null) {
+                continue;
+            }
+            gamePlayers.remove(gamePlayer);
+            gameManager.getGameByPlayer().remove(gamePlayer.getPlayer());
+            gameManager.getBattlefieldManager().getBattlefield().teleport(gamePlayer.getPlayer());
         }
         arena.delete(world);
     }
@@ -328,7 +334,7 @@ public class Game {
         return world;
     }
 
-    public Set<GamePlayer> getGamePlayers() {
+    public List<GamePlayer> getGamePlayers() {
         return gamePlayers;
     }
 
