@@ -26,7 +26,7 @@ public class DataConfig extends Config {
             getPlugin().getMultiverseAPI().getMVWorldManager().deleteWorld(worldName, true, true);
             if (getPlugin().hasWorldGuard()) {
                 try {
-                    new File(WorldGuardPlugin.inst().getDataFolder() + "/worlds/", worldName + ".yml").delete();
+                    new File(WorldGuardPlugin.inst().getDataFolder() + "/worlds/", worldName).delete();
                 } catch (SecurityException exp) {
                     continue;
                 }

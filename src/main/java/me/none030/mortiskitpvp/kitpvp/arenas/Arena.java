@@ -106,7 +106,7 @@ public class Arena {
         worldManager.deleteWorld(world.getName(), true, true);
         if (plugin.hasWorldGuard()) {
             try {
-                new File(WorldGuardPlugin.inst().getDataFolder() + "/worlds/", world.getName() + ".yml").delete();
+                new File(WorldGuardPlugin.inst().getDataFolder() + "/worlds/", world.getName()).delete();
             }catch (SecurityException ignored) {
             }
         }
