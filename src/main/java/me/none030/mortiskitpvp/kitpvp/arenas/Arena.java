@@ -3,10 +3,7 @@ package me.none030.mortiskitpvp.kitpvp.arenas;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import me.none030.mortiskitpvp.MortisKitPvp;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
@@ -31,11 +28,15 @@ public class Arena {
     private final boolean durability;
     private final boolean hunger;
     private final boolean dropping;
-    private final boolean interaction;
+    private final boolean picking;
     private final boolean breaking;
     private final boolean placing;
+    private final boolean redstone;
+    private final boolean doors;
+    private final boolean chest;
+    private final List<ArenaGameRule> gameRules;
 
-    public Arena(String id, String name, String author, String worldName, List<Location> redSpawns, List<Location> blueSpawns, Location spectate, boolean lavaInstantKill, boolean waterInstantKill, boolean durability, boolean hunger, boolean dropping, boolean interaction, boolean breaking, boolean placing) {
+    public Arena(String id, String name, String author, String worldName, List<Location> redSpawns, List<Location> blueSpawns, Location spectate, boolean lavaInstantKill, boolean waterInstantKill, boolean durability, boolean hunger, boolean dropping, boolean picking, boolean breaking, boolean placing, boolean redstone, boolean doors, boolean chest, List<ArenaGameRule> gameRules) {
         this.id = id;
         this.name = name;
         this.author = author;
@@ -48,9 +49,13 @@ public class Arena {
         this.durability = durability;
         this.hunger = hunger;
         this.dropping = dropping;
-        this.interaction = interaction;
+        this.picking = picking;
         this.breaking = breaking;
         this.placing = placing;
+        this.redstone = redstone;
+        this.doors = doors;
+        this.chest = chest;
+        this.gameRules = gameRules;
         unloadWorld();
     }
 
@@ -89,7 +94,11 @@ public class Arena {
         String newName = UUID.randomUUID().toString();
         MVWorldManager worldManager = plugin.getMultiverseAPI().getMVWorldManager();
         worldManager.cloneWorld(worldName, newName);
-        return Bukkit.getWorld(newName);
+        World world = Bukkit.getWorld(newName);
+        for (ArenaGameRule gameRule : gameRules) {
+            gameRule.setGameRule(world);
+        }
+        return world;
     }
 
     public void delete(World world) {
@@ -186,6 +195,65 @@ public class Arena {
         return location;
     }
 
+    public boolean isRedstone(Material material) {
+        if (material.name().contains("_BUTTON")) {
+            return true;
+        }
+        if (material.name().contains("_PRESSURE_PLATE")) {
+            return true;
+        }
+        List<Material> materials = new ArrayList<>();
+        materials.add(Material.SCULK_SENSOR);
+        materials.add(Material.DAYLIGHT_DETECTOR);
+        materials.add(Material.JUKEBOX);
+        materials.add(Material.LEVER);
+        materials.add(Material.REPEATER);
+        materials.add(Material.COMPARATOR);
+        materials.add(Material.BELL);
+        materials.add(Material.NOTE_BLOCK);
+        materials.add(Material.MINECART);
+        return materials.contains(material);
+    }
+
+    public boolean isDoors(Material material) {
+        if (material.name().contains("_DOOR")) {
+            return true;
+        }
+        if (material.name().contains("_TRAPDOOR")) {
+            return true;
+        }
+        return material.name().contains("_GATE");
+    }
+
+    public boolean isChest(Material material) {
+        if (material.name().contains("SHULKER_BOX")) {
+            return true;
+        }
+        List<Material> materials = new ArrayList<>();
+        materials.add(Material.ARMOR_STAND);
+        materials.add(Material.BARREL);
+        materials.add(Material.BEEHIVE);
+        materials.add(Material.BLAST_FURNACE);
+        materials.add(Material.BREWING_STAND);
+        materials.add(Material.CAMPFIRE);
+        materials.add(Material.CAULDRON);
+        materials.add(Material.CHEST);
+        materials.add(Material.DISPENSER);
+        materials.add(Material.DROPPER);
+        materials.add(Material.ENDER_CHEST);
+        materials.add(Material.FLOWER_POT);
+        materials.add(Material.FURNACE);
+        materials.add(Material.HOPPER);
+        materials.add(Material.ITEM_FRAME);
+        materials.add(Material.JUKEBOX);
+        materials.add(Material.LECTERN);
+        materials.add(Material.CHEST_MINECART);
+        materials.add(Material.HOPPER_MINECART);
+        materials.add(Material.SMOKER);
+        materials.add(Material.TRAPPED_CHEST);
+        return materials.contains(material);
+    }
+
     public String getId() {
         return id;
     }
@@ -234,8 +302,8 @@ public class Arena {
         return dropping;
     }
 
-    public boolean isInteraction() {
-        return interaction;
+    public boolean isPicking() {
+        return picking;
     }
 
     public boolean isBreaking() {
@@ -244,5 +312,21 @@ public class Arena {
 
     public boolean isPlacing() {
         return placing;
+    }
+
+    public boolean isRedstone() {
+        return redstone;
+    }
+
+    public boolean isDoors() {
+        return doors;
+    }
+
+    public boolean isChest() {
+        return chest;
+    }
+
+    public List<ArenaGameRule> getGameRules() {
+        return gameRules;
     }
 }

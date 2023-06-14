@@ -23,7 +23,7 @@ public class KitManager extends Manager {
         this.kitById = new HashMap<>();
         this.kitIdByPlayer = new HashMap<>();
         MortisKitPvp plugin = MortisKitPvp.getInstance();
-        plugin.getServer().getPluginManager().registerEvents(new KitListener(), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new KitListener(this), plugin);
     }
 
     public void addKit(Kit kit) {

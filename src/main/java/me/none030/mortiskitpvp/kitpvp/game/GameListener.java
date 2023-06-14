@@ -1,12 +1,14 @@
 package me.none030.mortiskitpvp.kitpvp.game;
 
 import me.none030.mortiskitpvp.kitpvp.kits.KitMenu;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -31,10 +33,13 @@ public class GameListener implements Listener {
     }
 
     @EventHandler
-    public void onInteract(PlayerInteractEvent e) {
-        Player player = e.getPlayer();
+    public void onPickup(EntityPickupItemEvent e) {
+        if (!(e.getEntity() instanceof Player)) {
+            return;
+        }
+        Player player = (Player) e.getEntity();
         Game game = gameManager.getGameByPlayer().get(player);
-        if (game == null || game.getArena().isInteraction()) {
+        if (game == null || game.getArena().isPicking()) {
             return;
         }
         e.setCancelled(true);
@@ -61,16 +66,40 @@ public class GameListener implements Listener {
     }
 
     @EventHandler
+    public void onInteract(PlayerInteractEvent e) {
+        Player player = e.getPlayer();
+        Block block = e.getClickedBlock();
+        if (block == null) {
+            return;
+        }
+        Game game = gameManager.getGameByPlayer().get(player);
+        if (game == null) {
+            return;
+        }
+        if (!game.getArena().isRedstone() && game.getArena().isRedstone(block.getType())) {
+            e.setCancelled(true);
+            return;
+        }
+        if (!game.getArena().isDoors() && game.getArena().isDoors(block.getType())) {
+            e.setCancelled(true);
+            return;
+        }
+        if (!game.getArena().isChest() && game.getArena().isChest(block.getType())) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
     public void onClose(InventoryCloseEvent e) {
         Player player = (Player) e.getPlayer();
         Game game = gameManager.getGameByPlayer().get(player);
-        if (game == null || !gameManager.isForceSelector()) {
+        if (game == null || game.isStarted() || !gameManager.isForceSelector()) {
             return;
         }
-        if (!e.getReason().equals(InventoryCloseEvent.Reason.PLAYER) || !(e.getInventory().getHolder() instanceof KitMenu)) {
+        if (gameManager.getBattlefieldManager().getKitManager().getKit(player) != null || !(e.getInventory().getHolder() instanceof KitMenu)) {
             return;
         }
-        KitMenu menu = new KitMenu(gameManager.getBattlefieldManager().getKitManager(), player);
+        KitMenu menu = (KitMenu) e.getInventory().getHolder();
         menu.open(player);
     }
 

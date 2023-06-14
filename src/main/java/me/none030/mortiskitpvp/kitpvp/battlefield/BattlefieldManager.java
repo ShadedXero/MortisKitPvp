@@ -50,7 +50,7 @@ public class BattlefieldManager extends Manager {
                     withoutElytraIterator.remove();
                 }
                 for (Player player : battlefield.getWorld().getPlayers()) {
-                    if (!player.getGameMode().equals(GameMode.SURVIVAL)) {
+                    if (player.getGameMode().equals(GameMode.SPECTATOR)) {
                         player.setGameMode(GameMode.SURVIVAL);
                     }
                     if (battlefield.isProtected(player.getLocation())) {
